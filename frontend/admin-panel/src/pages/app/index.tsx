@@ -153,25 +153,17 @@ export const Game = () => {
     }));
   };
 
-  const moveCardToDeck = (cardId: string, targetDeckId: string) => {
+  const moveCardToDeck = (cardId: string, currentDeckId: string, targetDeckId: string) => {
     setWorld((prevWorld) => {
       // Find which deck currently contains this card
-      let sourceDeckId: string | null = null;
-      for (const [deckId, deck] of Object.entries(prevWorld.decksById)) {
-        if (deck.cards.includes(cardId)) {
-          sourceDeckId = deckId;
-          break;
-        }
-      }
-
-      if (!sourceDeckId) return prevWorld;
+      if (currentDeckId === targetDeckId) return prevWorld;
 
       // Remove card from source deck
       const updatedDecks = {
         ...prevWorld.decksById,
-        [sourceDeckId]: {
-          ...prevWorld.decksById[sourceDeckId],
-          cards: prevWorld.decksById[sourceDeckId].cards.filter(id => id !== cardId)
+        [currentDeckId]: {
+          ...prevWorld.decksById[currentDeckId],
+          cards: prevWorld.decksById[currentDeckId].cards.filter(id => id !== cardId)
         },
         // Add card to target deck
         [targetDeckId]: {
@@ -273,7 +265,7 @@ export const Game = () => {
                                 isFaceUp={world.cardsById[cardId].isFaceUp}
                                 onClick={() => flipCard(cardId)}
                                 onFlip={() => flipCard(cardId)}
-                                onMoveToDeck={(targetDeckId) => moveCardToDeck(cardId, targetDeckId)}
+                                onMoveToDeck={(targetDeckId) => moveCardToDeck(cardId, deckId, targetDeckId)}
                                 availableDecks={Object.entries(world.decksById).map(([id, deck]) => ({
                                   id,
                                   name: deck.name
