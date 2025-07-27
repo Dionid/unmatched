@@ -154,6 +154,12 @@ export const Game = () => {
           name: "discard",
           cards: ["4"],
         },
+        "4": {
+          t: "deck",
+          id: "4",
+          name: "play",
+          cards: [],
+        },
       },
       resourcesById: {
         "1": {
@@ -172,7 +178,7 @@ export const Game = () => {
           t: "player",
           id: "1",
           name: "Player 1",
-          decks: ["1", "2", "3"],
+          decks: ["4", "1", "2", "3"],
           cards: ["1", "2", "3", "4"],
           resources: ["1"],
         },
