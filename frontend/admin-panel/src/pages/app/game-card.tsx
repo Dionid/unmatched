@@ -95,14 +95,60 @@ export const GameCard = ({
 export const GamePile = ({
   cardsById,
   deck,
+  allDecks,
+  onTakeTopCard,
+  onShuffle,
 }: {
   cardsById: Record<CardId, Card>;
   deck: Deck;
+  allDecks: Deck[];
+  onTakeTopCard: (targetDeckId: string) => void;
+  onShuffle: () => void;
 }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleTakeTopCard = (targetDeckId: string) => {
+    onTakeTopCard(targetDeckId);
+    setIsMenuOpen(false);
+  };
+
+  const handleShuffle = () => {
+    onShuffle();
+    setIsMenuOpen(false);
+  };
+
   return (
-    <div className="w-30 h-42 transition-transform hover:scale-103 cursor-pointer">
-      <img src={cardsById[deck.cards[0]].backImageUri} alt="Draw" />
-    </div>
+    <DropdownMenu
+      open={isMenuOpen}
+      onOpenChange={setIsMenuOpen}
+    >
+      <DropdownMenuTrigger asChild>
+        <div 
+          className="w-30 h-42 transition-transform hover:scale-103 cursor-pointer"
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setIsMenuOpen(true);
+          }}
+        >
+          <img src={cardsById[deck.cards[0]].backImageUri} alt="Draw" />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        <DropdownMenuItem onClick={handleShuffle}>
+          Shuffle
+        </DropdownMenuItem>
+        {allDecks
+          .filter((targetDeck) => targetDeck.id !== deck.id)
+          .map((targetDeck) => (
+            <DropdownMenuItem
+              key={targetDeck.id}
+              onClick={() => handleTakeTopCard(targetDeck.id)}
+            >
+              Take top card to {targetDeck.name}
+            </DropdownMenuItem>
+          ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -112,6 +158,8 @@ export const GameDeckInternal = ({
   flipCard,
   moveCardToDeck,
   allDecks,
+  onTakeTopCard,
+  onShuffle,
 }: {
   deck: Deck;
   cardsById: Record<CardId, Card>;
@@ -122,21 +170,36 @@ export const GameDeckInternal = ({
     targetDeckId: string
   ) => void;
   allDecks: Deck[];
+  onTakeTopCard: (sourceDeckId: string, targetDeckId: string) => void;
+  onShuffle: (deckId: string) => void;
 }) => {
   if (deck.cards.length == 0) {
     return (
-      <div className="w-27 h-40">
-        <div className="w-full h-full bg-gray-300 rounded-md flex items-center justify-center">
-          <p className="text-sm text-gray-500">Empty</p>
+      <div className="w-30 h-42">
+        <div className="w-full h-full bg-gray-400 rounded-md flex items-center justify-center">
+          <p className="text-sm text-gray-600">Empty</p>
         </div>
       </div>
     );
   }
 
   if (deck.type === "draw" || deck.type === "discard") {
-    return <GamePile cardsById={cardsById} deck={deck} />;
+    return (
+      <GamePile 
+        cardsById={cardsById} 
+        deck={deck} 
+        allDecks={allDecks}
+        onTakeTopCard={(targetDeckId) => onTakeTopCard(deck.id, targetDeckId)}
+        onShuffle={() => onShuffle(deck.id)}
+      />
+    );
   }
 
+  if (deck.type !== "hand") {
+    throw new Error(`Invalid deck type: ${deck.type}`);
+  }
+
+  // # Hand
   return deck.cards.map((cardId) => {
     const cardStyle: React.CSSProperties = {};
 
@@ -152,8 +215,8 @@ export const GameDeckInternal = ({
         frontImageUri={cardsById[cardId].frontImageUri}
         backImageUri={cardsById[cardId].backImageUri}
         name={cardsById[cardId].name}
-        isFaceUp={cardsById[cardId].isFaceUp}
-        onFlip={() => flipCard(cardId)}
+        isFaceUp={true}
+        // onFlip={() => flipCard(cardId)}
         onMoveToDeck={(targetDeckId) =>
           moveCardToDeck(cardId, deck.id, targetDeckId)
         }
@@ -170,6 +233,8 @@ export const GameDeck = ({
   cardsById,
   flipCard,
   moveCardToDeck,
+  onTakeTopCard,
+  onShuffle,
 }: {
   deck: Deck;
   allDecks: Deck[];
@@ -180,6 +245,8 @@ export const GameDeck = ({
     deckId: string,
     targetDeckId: string
   ) => void;
+  onTakeTopCard: (sourceDeckId: string, targetDeckId: string) => void;
+  onShuffle: (deckId: string) => void;
 }) => {
   const deckClassName: string[] = [];
 
@@ -200,6 +267,8 @@ export const GameDeck = ({
           flipCard={flipCard}
           moveCardToDeck={moveCardToDeck}
           allDecks={allDecks}
+          onTakeTopCard={onTakeTopCard}
+          onShuffle={onShuffle}
         />
       </div>
     </div>

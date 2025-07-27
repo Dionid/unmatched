@@ -208,6 +208,64 @@ export const Game = () => {
     });
   };
 
+  // Function to take top card from a deck and move it to another deck
+  const takeTopCard = (sourceDeckId: string, targetDeckId: string) => {
+    setWorld((prevWorld) => {
+      const sourceDeck = prevWorld.decksById[sourceDeckId];
+      if (!sourceDeck || sourceDeck.cards.length === 0) return prevWorld;
+
+      const topCardId = sourceDeck.cards[sourceDeck.cards.length - 1]; // Get the top card
+
+      // Remove top card from source deck
+      const updatedDecks = {
+        ...prevWorld.decksById,
+        [sourceDeckId]: {
+          ...sourceDeck,
+          cards: sourceDeck.cards.slice(0, -1), // Remove the last card
+        },
+        // Add top card to target deck
+        [targetDeckId]: {
+          ...prevWorld.decksById[targetDeckId],
+          cards: [
+            ...prevWorld.decksById[targetDeckId].cards,
+            topCardId,
+          ],
+        },
+      };
+
+      return {
+        ...prevWorld,
+        decksById: updatedDecks,
+      };
+    });
+  };
+
+  // Function to shuffle a deck
+  const shuffleDeck = (deckId: string) => {
+    setWorld((prevWorld) => {
+      const deck = prevWorld.decksById[deckId];
+      if (!deck || deck.cards.length === 0) return prevWorld;
+
+      // Create a copy of the cards array and shuffle it
+      const shuffledCards = [...deck.cards];
+      for (let i = shuffledCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]];
+      }
+
+      return {
+        ...prevWorld,
+        decksById: {
+          ...prevWorld.decksById,
+          [deckId]: {
+            ...deck,
+            cards: shuffledCards,
+          },
+        },
+      };
+    });
+  };
+
   return (
     <div 
       className="w-full h-full p-6 relative"
@@ -322,6 +380,8 @@ export const Game = () => {
                       cardsById={world.cardsById}
                       flipCard={flipCard}
                       moveCardToDeck={moveCardToDeck}
+                      onTakeTopCard={takeTopCard}
+                      onShuffle={shuffleDeck}
                     />
                   </div>
                 );
