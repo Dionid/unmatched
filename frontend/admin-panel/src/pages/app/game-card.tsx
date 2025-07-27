@@ -92,6 +92,68 @@ export const GameCard = ({
   );
 };
 
+export const GameDeckInternal = ({
+  deck,
+  cardsById,
+  flipCard,
+  moveCardToDeck,
+  allDecks,
+}: {
+  deck: Deck;
+  cardsById: Record<CardId, Card>;
+  flipCard: (cardId: string) => void;
+  moveCardToDeck: (
+    cardId: string,
+    deckId: string,
+    targetDeckId: string
+  ) => void;
+  allDecks: Deck[];
+}) => {
+  if (deck.cards.length == 0) {
+    return (
+      <div className="w-27 h-40">
+        <div className="w-full h-full bg-gray-300 rounded-md flex items-center justify-center">
+          <p className="text-sm text-gray-500">Empty</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (deck.type === "draw" || deck.type === "discard") {
+    return (
+      <div className="w-30 h-42 transition-transform hover:scale-103 cursor-pointer">
+        <img src={cardsById[deck.cards[0]].backImageUri} alt="Draw" />
+      </div>
+    );
+  }
+
+  return deck.cards.map((cardId) => {
+    const cardStyle: React.CSSProperties = {};
+
+    const className: string[] = [
+      "w-30 hover:-translate-y-10 transition-transform hover:scale-150",
+    ];
+
+    return (
+      <GameCard
+        key={cardId}
+        className={className.join(" ")}
+        style={cardStyle}
+        frontImageUri={cardsById[cardId].frontImageUri}
+        backImageUri={cardsById[cardId].backImageUri}
+        name={cardsById[cardId].name}
+        isFaceUp={cardsById[cardId].isFaceUp}
+        onFlip={() => flipCard(cardId)}
+        onMoveToDeck={(targetDeckId) =>
+          moveCardToDeck(cardId, deck.id, targetDeckId)
+        }
+        availableDecks={allDecks}
+        currentDeckId={deck.id}
+      />
+    );
+  });
+};
+
 export const GameDeck = ({
   deck,
   allDecks,
@@ -122,41 +184,13 @@ export const GameDeck = ({
 
       {/* Cards container */}
       <div className={`flex p-2 gap-1 ${deckClassName.join(" ")}`}>
-
-        {/* Empty card */}
-        {deck.cards.length == 0 && (
-          <div className="w-27 h-40">
-            <div className="w-full h-full bg-gray-300 rounded-md flex items-center justify-center">
-              <p className="text-sm text-gray-500">Empty</p>
-            </div>
-          </div>
-        )}
-
-        {deck.cards.map((cardId) => {
-          const cardStyle: React.CSSProperties = {};
-
-          const className: string[] = [
-            "w-30 hover:-translate-y-10 transition-transform hover:scale-150",
-          ];
-
-          return (
-            <GameCard
-              key={cardId}
-              className={className.join(" ")}
-              style={cardStyle}
-              frontImageUri={cardsById[cardId].frontImageUri}
-              backImageUri={cardsById[cardId].backImageUri}
-              name={cardsById[cardId].name}
-              isFaceUp={cardsById[cardId].isFaceUp}
-              onFlip={() => flipCard(cardId)}
-              onMoveToDeck={(targetDeckId) =>
-                moveCardToDeck(cardId, deck.id, targetDeckId)
-              }
-              availableDecks={allDecks}
-              currentDeckId={deck.id}
-            />
-          );
-        })}
+        <GameDeckInternal
+          deck={deck}
+          cardsById={cardsById}
+          flipCard={flipCard}
+          moveCardToDeck={moveCardToDeck}
+          allDecks={allDecks}
+        />
       </div>
     </div>
   );
