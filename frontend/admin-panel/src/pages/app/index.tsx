@@ -2,91 +2,18 @@ import { World } from "@/lib/game";
 import { useEffect, useState } from "react";
 import { GameCard } from "./game-card";
 
+const defaultWorld: World = {
+  t: "world",
+  id: "1",
+  currentPlayerId: "1",
+  playersById: {},
+  cardsById: {},
+  decksById: {},
+  resourcesById: {},
+};
+
 export const Game = () => {
-  const [world, setWorld] = useState<World>({
-    t: "world",
-    id: "1",
-    currentPlayerId: "1",
-    playersById: {},
-    cardsById: {},
-    decksById: {},
-    resourcesById: {},
-  });
-
-  // Function to increment resource value
-  const incrementResource = (resourceId: string) => {
-    setWorld((prevWorld) => ({
-      ...prevWorld,
-      resourcesById: {
-        ...prevWorld.resourcesById,
-        [resourceId]: {
-          ...prevWorld.resourcesById[resourceId],
-          value: prevWorld.resourcesById[resourceId].value + 1,
-        },
-      },
-    }));
-  };
-
-  // Function to decrement resource value
-  const decrementResource = (resourceId: string) => {
-    setWorld((prevWorld) => ({
-      ...prevWorld,
-      resourcesById: {
-        ...prevWorld.resourcesById,
-        [resourceId]: {
-          ...prevWorld.resourcesById[resourceId],
-          value: Math.max(0, prevWorld.resourcesById[resourceId].value - 1),
-        },
-      },
-    }));
-  };
-
-  const flipCard = (cardId: string) => {
-    setWorld((prevWorld) => ({
-      ...prevWorld,
-      cardsById: {
-        ...prevWorld.cardsById,
-        [cardId]: {
-          ...prevWorld.cardsById[cardId],
-          isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
-        },
-      },
-    }));
-  };
-
-  const moveCardToDeck = (cardId: string, targetDeckId: string) => {
-    setWorld((prevWorld) => {
-      // Find which deck currently contains this card
-      let sourceDeckId: string | null = null;
-      for (const [deckId, deck] of Object.entries(prevWorld.decksById)) {
-        if (deck.cards.includes(cardId)) {
-          sourceDeckId = deckId;
-          break;
-        }
-      }
-
-      if (!sourceDeckId) return prevWorld;
-
-      // Remove card from source deck
-      const updatedDecks = {
-        ...prevWorld.decksById,
-        [sourceDeckId]: {
-          ...prevWorld.decksById[sourceDeckId],
-          cards: prevWorld.decksById[sourceDeckId].cards.filter(id => id !== cardId)
-        },
-        // Add card to target deck
-        [targetDeckId]: {
-          ...prevWorld.decksById[targetDeckId],
-          cards: [...prevWorld.decksById[targetDeckId].cards, cardId]
-        }
-      };
-
-      return {
-        ...prevWorld,
-        decksById: updatedDecks
-      };
-    });
-  };
+  const [world, setWorld] = useState<World>(defaultWorld);
 
   useEffect(() => {
     setWorld({
@@ -184,7 +111,81 @@ export const Game = () => {
         },
       },
     });
-  }, [setWorld]);
+  }, []);
+  // Function to increment resource value
+  const incrementResource = (resourceId: string) => {
+    setWorld((prevWorld) => ({
+      ...prevWorld,
+      resourcesById: {
+        ...prevWorld.resourcesById,
+        [resourceId]: {
+          ...prevWorld.resourcesById[resourceId],
+          value: prevWorld.resourcesById[resourceId].value + 1,
+        },
+      },
+    }));
+  };
+
+  // Function to decrement resource value
+  const decrementResource = (resourceId: string) => {
+    setWorld((prevWorld) => ({
+      ...prevWorld,
+      resourcesById: {
+        ...prevWorld.resourcesById,
+        [resourceId]: {
+          ...prevWorld.resourcesById[resourceId],
+          value: Math.max(0, prevWorld.resourcesById[resourceId].value - 1),
+        },
+      },
+    }));
+  };
+
+  const flipCard = (cardId: string) => {
+    setWorld((prevWorld) => ({
+      ...prevWorld,
+      cardsById: {
+        ...prevWorld.cardsById,
+        [cardId]: {
+          ...prevWorld.cardsById[cardId],
+          isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
+        },
+      },
+    }));
+  };
+
+  const moveCardToDeck = (cardId: string, targetDeckId: string) => {
+    setWorld((prevWorld) => {
+      // Find which deck currently contains this card
+      let sourceDeckId: string | null = null;
+      for (const [deckId, deck] of Object.entries(prevWorld.decksById)) {
+        if (deck.cards.includes(cardId)) {
+          sourceDeckId = deckId;
+          break;
+        }
+      }
+
+      if (!sourceDeckId) return prevWorld;
+
+      // Remove card from source deck
+      const updatedDecks = {
+        ...prevWorld.decksById,
+        [sourceDeckId]: {
+          ...prevWorld.decksById[sourceDeckId],
+          cards: prevWorld.decksById[sourceDeckId].cards.filter(id => id !== cardId)
+        },
+        // Add card to target deck
+        [targetDeckId]: {
+          ...prevWorld.decksById[targetDeckId],
+          cards: [...prevWorld.decksById[targetDeckId].cards.filter(id => id !== cardId), cardId]
+        }
+      };
+
+      return {
+        ...prevWorld,
+        decksById: updatedDecks
+      };
+    });
+  };
 
   return (
     <div className="flex gap-4 p-6 w-full">
@@ -277,6 +278,7 @@ export const Game = () => {
                                   id,
                                   name: deck.name
                                 }))}
+                                currentDeckId={deckId}
                               />
                             );
                           })}

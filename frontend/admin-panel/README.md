@@ -3,6 +3,7 @@
 ## Card
 
 1. Flip
+1. Move to deck X
 
 ## Deck
 

@@ -11,13 +11,15 @@ export const GameCard = ({
   onFlip,
   onMoveToDeck,
   availableDecks = [],
-  disableMenu = false
+  disableMenu = false,
+  currentDeckId
 }: { 
   frontImageUri: string; 
   backImageUri: string; 
   alt?: string; 
   name: string; 
   isFaceUp: boolean; 
+  currentDeckId?: string;
   disableMenu?: boolean;
   onClick?: () => void;
   onFlip?: () => void;
@@ -41,6 +43,10 @@ export const GameCard = ({
   };
 
   const handleMoveToDeck = (deckId: string) => {
+    if (deckId === currentDeckId) {
+      return
+    }
+
     if (onMoveToDeck) {
       onMoveToDeck(deckId);
     }
@@ -66,7 +72,7 @@ export const GameCard = ({
         <DropdownMenuItem onClick={handleFlip}>
           Flip
         </DropdownMenuItem>
-        {availableDecks.map((deck) => (
+        {availableDecks.filter(deck => deck.id !== currentDeckId).map((deck) => (
           <DropdownMenuItem 
             key={deck.id} 
             onClick={() => handleMoveToDeck(deck.id)}
