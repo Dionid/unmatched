@@ -10,8 +10,10 @@ export type CharacterBundleId = string;
 export type Card = {
     t: 'card';
     id: CardId;
+    name: string;
     frontImageUri: string;
     backImageUri: string;
+    isFaceUp: boolean;
 }
 
 export type Character = {
@@ -42,6 +44,7 @@ export type Resource = {
 export type Deck = {
     t: 'deck';
     id: DeckId;
+    name: string;
     cards: CardId[];
 }
 

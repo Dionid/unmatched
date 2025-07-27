@@ -1,9 +1,30 @@
-# Paasible UI
+# Game
 
-WORK IN PROGRESS so nothing to see here yet
+## Card
 
+1. Flip
 
-1. SignUp -> Creates workspace, user, tg_verify
-1. /app -> /verify 
-1. /app -> /addchannel
-1. /app -> /uploadhistory
+## Deck
+
+1. Used as
+    1. Draw
+    1. Hand
+    1. Discard
+1. Permissions
+    1. Can be seen by owner
+    1. Actions can be done by owner
+1. Actions
+    1. Shuffle
+    1. Look
+    1. Show Y to X (all, player X, etc.)
+    1. Move N from POS to Deck
+    1. Put on POS
+
+# Dictionary
+
+1. N – number
+1. POS
+    1. top
+    1. bottom
+    1. random
+1 ...

@@ -1,5 +1,6 @@
 import { World } from "@/lib/game";
 import { useEffect, useState } from "react";
+import { GameCard } from "./game-card";
 
 export const Game = () => {
   const [world, setWorld] = useState<World>({
@@ -41,6 +42,19 @@ export const Game = () => {
     }));
   };
 
+  const flipCard = (cardId: string) => {
+    setWorld(prevWorld => ({
+      ...prevWorld,
+      cardsById: {
+        ...prevWorld.cardsById,
+        [cardId]: {
+          ...prevWorld.cardsById[cardId],
+          isFaceUp: !prevWorld.cardsById[cardId].isFaceUp
+        }
+      }
+    }));
+  };
+
   useEffect(() => {
     setWorld({
       t: "world",
@@ -59,16 +73,55 @@ export const Game = () => {
         "1": {
           t: "card",
           id: "1",
+          name: "Jekyll & Hyde 1",
           frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/eEYajsgspLNDHftUQoyh2.webp",
           backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
-        }
+          isFaceUp: true,
+        },
+        "2": {
+          t: "card",
+          id: "2",
+          name: "Jekyll & Hyde 2",
+          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/-05aruis4rhEh7psaXnea.webp",
+          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          isFaceUp: true,
+        },
+        "3": {
+          t: "card",
+          id: "3",
+          name: "Jekyll & Hyde 3",
+          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/kAt5fbRGnyOOoLbnH3IHj.webp",
+          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          isFaceUp: true,
+        },
+        "4": {
+          t: "card",
+          id: "4",
+          name: "Jekyll & Hyde 4",
+          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/zCwYyB4XLQ5xfbAfUEAhk.webp",
+          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          isFaceUp: false,
+        },
       },
       decksById: {
         "1": {
           t: "deck",
           id: "1",
-          cards: ["1"],
-        }
+          name: "hand",
+          cards: ["1", "2"],
+        },
+        "2": {
+          t: "deck",
+          id: "2",
+          name: "draw",
+          cards: ["3"],
+        },
+        "3": {
+          t: "deck",
+          id: "3",
+          name: "discard",
+          cards: ["4"],
+        },
       },
       resourcesById: {
         "1": {
@@ -85,9 +138,9 @@ export const Game = () => {
           t: "player",
           id: "1",
           name: "Player 1",
-          decks: ["1"],
+          decks: ["1", "2", "3"],
           characters: ["1"],
-          cards: ["1"],
+          cards: ["1", "2", "3", "4"],
           resources: ["1"],
         }
       },
@@ -109,10 +162,7 @@ export const Game = () => {
                     {
                       player.characters.map((characterId) => {
                         return (
-                          <div key={characterId} className="flex flex-col text-center border-2 border-gray-300 rounded-md p-2 w-35">
-                            <img className="" src={world.charactersById[characterId].imageUri} alt={world.charactersById[characterId].name} />
-                            <h3 className="text-md font-bold">{world.charactersById[characterId].name}</h3>
-                          </div>
+                          <GameCard frontImageUri={world.charactersById[characterId].imageUri} backImageUri={world.charactersById[characterId].imageUri} name={world.charactersById[characterId].name} isFaceUp={true} />
                         )
                       })
                     }
@@ -120,13 +170,11 @@ export const Game = () => {
                 </div>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-lg font-bold">Cards</h3>
-                  <div className="flex flex-col gap-2">
+                  <div className="grid grid-cols-3 gap-2 w-120">
                     {
                       player.cards.map((cardId) => {
                         return (
-                          <div key={cardId} className="flex flex-col text-center p-2 w-35">
-                            <img className="" src={world.cardsById[cardId].frontImageUri} />
-                          </div>
+                          <GameCard frontImageUri={world.cardsById[cardId].frontImageUri} backImageUri={world.cardsById[cardId].backImageUri} name={world.cardsById[cardId].name} isFaceUp={true} />
                         )
                       })
                     }
@@ -156,6 +204,29 @@ export const Game = () => {
                             </div>
                             <img className="" src={world.resourcesById[resourceId].imageUri} />
                             <h3 className="text-md font-bold">{world.resourcesById[resourceId].name}</h3>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-lg font-bold">Decks</h3>
+                  <div className="flex flex-col gap-2">
+                    {
+                      player.decks.map((deckId) => {
+                        return (
+                          <div key={deckId} className="flex flex-col p-2 w-35">
+                            <h3 className="text-md font-bold">{world.decksById[deckId].name}</h3>
+                            <div className="grid grid-cols-3 gap-2 w-120">
+                              {
+                                world.decksById[deckId].cards.map((cardId) => {
+                                  return (
+                                    <GameCard key={cardId} frontImageUri={world.cardsById[cardId].frontImageUri} backImageUri={world.cardsById[cardId].backImageUri} name={world.cardsById[cardId].name} isFaceUp={world.cardsById[cardId].isFaceUp} onClick={() => flipCard(cardId)} />
+                                  )
+                                })
+                              }
+                            </div>
                           </div>
                         )
                       })
