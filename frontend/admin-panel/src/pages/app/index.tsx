@@ -1,4 +1,4 @@
-import { DeckId, ResourceId, World } from "@/lib/game";
+import { DeckId, ResourceId, World } from "@/pages/app/game";
 import { useEffect, useState } from "react";
 import { GameDeck } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
@@ -9,15 +9,15 @@ export type Settings = {
     {
       cardsPerRow?: number;
       cardWidth?: number;
-      positionY?: "top" | "center" | "bottom";
-      positionX?: "left" | "center" | "right";
+      positionY?: string;
+      positionX?: string;
     }
   >;
   resourceSettings: Record<
     ResourceId,
     {
-      positionY?: "top" | "center" | "bottom";
-      positionX?: "left" | "center" | "right";
+      positionY?: string;
+      positionX?: string;
     }
   >;
 };

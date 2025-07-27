@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router";
-import { DashboardPage } from "./pages/app/pages/dashboard";
 import { AppLayout } from "./pages/app";
 import { useEffect } from "react";
 
@@ -25,7 +24,7 @@ const AppInner = () => {
       </Route> */}
 
       <Route path="app" element={<AppLayout />}>
-        <Route index element={<DashboardPage />} />
+        {/* <Route index element={<DashboardPage />} /> */}
       </Route>
     </Routes>
   );

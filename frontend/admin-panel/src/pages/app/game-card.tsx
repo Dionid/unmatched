@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardId, Deck } from "@/lib/game";
+import { Card, CardId, Deck } from "@/pages/app/game";
 
 export const GameCard = ({
   frontImageUri,
@@ -122,21 +122,11 @@ export const GameDeck = ({
   return (
     <div className={deckClassName.join(" ")}>
       {deck.cards.map((cardId, index) => {
-        const cardStyle: React.CSSProperties = {
-          // width: "120px",
-        };
-
-        // if (deck.grouped) {
-        //   cardStyle.left = `${index * 3}px`;
-        // }
+        const cardStyle: React.CSSProperties = {};
 
         const className: string[] = [
           "w-30 hover:-translate-y-16 transition-transform hover:scale-150"
         ]
-
-        // if (deck.grouped) {
-        //   className += "absolute";
-        // }
 
         return (
           <GameCard

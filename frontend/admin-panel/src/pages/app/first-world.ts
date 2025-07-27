@@ -1,4 +1,4 @@
-import { World } from "@/lib/game";
+import { World } from "@/pages/app/game";
 
 export const defaultWorld: World = {
   t: "world",
