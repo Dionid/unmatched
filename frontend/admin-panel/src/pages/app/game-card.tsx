@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { World } from "@/lib/game";
+import { Card, CardId, Deck } from "@/lib/game";
 
 export const GameCard = ({
   frontImageUri,
@@ -13,7 +13,6 @@ export const GameCard = ({
   alt,
   name,
   isFaceUp,
-  onClick,
   onFlip,
   onMoveToDeck,
   availableDecks = [],
@@ -31,19 +30,11 @@ export const GameCard = ({
   isFaceUp: boolean;
   currentDeckId?: string;
   disableMenu?: boolean;
-  onClick?: () => void;
   onFlip?: () => void;
   onMoveToDeck?: (deckId: string) => void;
   availableDecks?: Array<{ id: string; name: string }>;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleCardClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (onClick) {
-      onClick();
-    }
-  };
 
   const handleFlip = () => {
     if (onFlip) {
@@ -70,9 +61,8 @@ export const GameCard = ({
     >
       <DropdownMenuTrigger asChild>
         <div
-          className={`flex flex-col text-center p-2 w-35 cursor-pointer hover:bg-gray-100 rounded transition-colors ${className}`}
+          className={`p-2 cursor-pointer hover:bg-gray-100 rounded transition-colors ${className}`}
           style={style}
-          onClick={handleCardClick}
           onContextMenu={(e) => {
             e.preventDefault();
             setIsMenuOpen(true);
@@ -83,7 +73,6 @@ export const GameCard = ({
             src={isFaceUp ? frontImageUri : backImageUri}
             alt={alt ?? name}
           />
-          {/* <h3 className="text-md font-bold">{name}</h3> */}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
@@ -103,14 +92,16 @@ export const GameCard = ({
   );
 };
 
-export const Deck = ({
-  deckId,
-  world,
+export const GameDeck = ({
+  deck,
+  allDecks,
+  cardsById,
   flipCard,
   moveCardToDeck,
 }: {
-  deckId: string;
-  world: World;
+  deck: Deck;
+  allDecks: Deck[];
+  cardsById: Record<CardId, Card>;
   flipCard: (cardId: string) => void;
   moveCardToDeck: (
     cardId: string,
@@ -118,38 +109,50 @@ export const Deck = ({
     targetDeckId: string
   ) => void;
 }) => {
+  const deckClassName: string[] = ["flex"]
+  
+  if (deck.grouped) {
+    deckClassName.push("relative")
+  }
+
+  if (deck.cards.length == 0) {
+    deckClassName.push("bg-gray-300 w-24 h-30")
+  }
+
   return (
-    <div
-      className={`${
-        world.decksById[deckId].grouped
-          ? "relative h-50"
-          : "grid grid-cols-4 w-130 gap-2"
-      }`}
-    >
-      {world.decksById[deckId].cards.map((cardId, index) => {
+    <div className={deckClassName.join(" ")}>
+      {deck.cards.map((cardId, index) => {
+        const cardStyle: React.CSSProperties = {
+          // width: "120px",
+        };
+
+        // if (deck.grouped) {
+        //   cardStyle.left = `${index * 3}px`;
+        // }
+
+        const className: string[] = [
+          "w-30 hover:-translate-y-16 transition-transform hover:scale-150"
+        ]
+
+        // if (deck.grouped) {
+        //   className += "absolute";
+        // }
+
         return (
           <GameCard
             key={cardId}
-            className={world.decksById[deckId].grouped ? `absolute` : ""}
-            style={
-              world.decksById[deckId].grouped ? { left: `${index * 3}px` } : {}
-            }
-            frontImageUri={world.cardsById[cardId].frontImageUri}
-            backImageUri={world.cardsById[cardId].backImageUri}
-            name={world.cardsById[cardId].name}
-            isFaceUp={world.cardsById[cardId].isFaceUp}
-            onClick={() => flipCard(cardId)}
+            className={className.join(" ")}
+            style={cardStyle}
+            frontImageUri={cardsById[cardId].frontImageUri}
+            backImageUri={cardsById[cardId].backImageUri}
+            name={cardsById[cardId].name}
+            isFaceUp={cardsById[cardId].isFaceUp}
             onFlip={() => flipCard(cardId)}
             onMoveToDeck={(targetDeckId) =>
-              moveCardToDeck(cardId, deckId, targetDeckId)
+              moveCardToDeck(cardId, deck.id, targetDeckId)
             }
-            availableDecks={Object.entries(world.decksById).map(
-              ([id, deck]) => ({
-                id,
-                name: deck.name,
-              })
-            )}
-            currentDeckId={deckId}
+            availableDecks={allDecks}
+            currentDeckId={deck.id}
           />
         );
       })}

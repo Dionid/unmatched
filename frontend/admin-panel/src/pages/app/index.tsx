@@ -1,121 +1,60 @@
-import { World } from "@/lib/game";
+import { DeckId, ResourceId, World } from "@/lib/game";
 import { useEffect, useState } from "react";
-import { Deck, GameCard } from "./game-card";
+import { GameDeck } from "./game-card";
+import { defaultWorld, firstWorld } from "./first-world";
 
-const defaultWorld: World = {
-  t: "world",
-  id: "1",
-  currentPlayerId: "1",
-  playersById: {},
-  cardsById: {},
-  decksById: {},
-  resourcesById: {},
+export type Settings = {
+  deckSettings: Record<
+    DeckId,
+    {
+      cardsPerRow?: number;
+      cardWidth?: number;
+      positionY?: "top" | "center" | "bottom";
+      positionX?: "left" | "center" | "right";
+    }
+  >;
+  resourceSettings: Record<
+    ResourceId,
+    {
+      positionY?: "top" | "center" | "bottom";
+      positionX?: "left" | "center" | "right";
+    }
+  >;
 };
 
 export const Game = () => {
   const [world, setWorld] = useState<World>(defaultWorld);
+  const [settings, setSettings] = useState<Settings>({
+    deckSettings: {
+      "1": {
+        positionY: "bottom",
+        positionX: "center",
+      },
+      "2": {
+        positionY: "bottom",
+        positionX: "right",
+      },
+      "3": {
+        positionY: "bottom",
+        positionX: "left",
+      },
+      "4": {
+        positionY: "center",
+        positionX: "center",
+      },
+    },
+    resourceSettings: {
+      "1": {
+        positionY: "center",
+        positionX: "left",
+      },
+    },
+  });
 
   useEffect(() => {
-    setWorld({
-      t: "world",
-      id: "1",
-      currentPlayerId: "1",
-      cardsById: {
-        "1": {
-          t: "card",
-          id: "1",
-          name: "Jekyll & Hyde 1",
-          frontImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/eEYajsgspLNDHftUQoyh2.webp",
-          backImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
-          isFaceUp: true,
-        },
-        "2": {
-          t: "card",
-          id: "2",
-          name: "Jekyll & Hyde 2",
-          frontImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/-05aruis4rhEh7psaXnea.webp",
-          backImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
-          isFaceUp: true,
-        },
-        "3": {
-          t: "card",
-          id: "3",
-          name: "Jekyll & Hyde 3",
-          frontImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/kAt5fbRGnyOOoLbnH3IHj.webp",
-          backImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
-          isFaceUp: true,
-        },
-        "4": {
-          t: "card",
-          id: "4",
-          name: "Jekyll & Hyde 4",
-          frontImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/zCwYyB4XLQ5xfbAfUEAhk.webp",
-          backImageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
-          isFaceUp: false,
-        },
-      },
-      decksById: {
-        "1": {
-          t: "deck",
-          id: "1",
-          name: "hand",
-          cards: ["1", "2"],
-          grouped: false,
-        },
-        "2": {
-          t: "deck",
-          id: "2",
-          name: "draw",
-          cards: ["3"],
-          grouped: true,
-        },
-        "3": {
-          t: "deck",
-          id: "3",
-          name: "discard",
-          cards: ["4"],
-          grouped: true,
-        },
-        "4": {
-          t: "deck",
-          id: "4",
-          name: "play",
-          cards: [],
-          grouped: false,
-        },
-      },
-      resourcesById: {
-        "1": {
-          t: "resource",
-          id: "1",
-          name: "Health",
-          description:
-            "Health is a resource that can be used to heal characters.",
-          imageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/avatars/3G9V5x3JHXMZ4G5H3Kk7s.webp",
-          value: 10,
-        },
-      },
-      playersById: {
-        "1": {
-          t: "player",
-          id: "1",
-          name: "Player 1",
-          decks: ["4", "1", "2", "3"],
-          cards: ["1", "2", "3", "4"],
-          resources: ["1"],
-        },
-      },
-    });
+    setWorld(firstWorld);
   }, []);
+
   // Function to increment resource value
   const incrementResource = (resourceId: string) => {
     setWorld((prevWorld) => ({
@@ -157,7 +96,11 @@ export const Game = () => {
     }));
   };
 
-  const moveCardToDeck = (cardId: string, currentDeckId: string, targetDeckId: string) => {
+  const moveCardToDeck = (
+    cardId: string,
+    currentDeckId: string,
+    targetDeckId: string
+  ) => {
     setWorld((prevWorld) => {
       // Find which deck currently contains this card
       if (currentDeckId === targetDeckId) return prevWorld;
@@ -167,30 +110,37 @@ export const Game = () => {
         ...prevWorld.decksById,
         [currentDeckId]: {
           ...prevWorld.decksById[currentDeckId],
-          cards: prevWorld.decksById[currentDeckId].cards.filter(id => id !== cardId)
+          cards: prevWorld.decksById[currentDeckId].cards.filter(
+            (id) => id !== cardId
+          ),
         },
         // Add card to target deck
         [targetDeckId]: {
           ...prevWorld.decksById[targetDeckId],
-          cards: [...prevWorld.decksById[targetDeckId].cards.filter(id => id !== cardId), cardId]
-        }
+          cards: [
+            ...prevWorld.decksById[targetDeckId].cards.filter(
+              (id) => id !== cardId
+            ),
+            cardId,
+          ],
+        },
       };
 
       return {
         ...prevWorld,
-        decksById: updatedDecks
+        decksById: updatedDecks,
       };
     });
   };
 
   return (
-    <div className="flex gap-4 p-6 w-full">
+    <div className="w-full h-full p-6 relative">
       <div className="flex flex-col gap-4">
         {Object.entries(world.playersById).map(([id, player]) => {
           return (
             <div key={id} className="flex gap-4 w-md">
-              <h2 className="text-xl font-bold">{player.name}</h2>
-              <div className="flex flex-col gap-2">
+              {/* <h2 className="text-xl font-bold">{player.name}</h2> */}
+              {/* <div className="flex flex-col gap-2">
                 <h3 className="text-lg font-bold">Cards</h3>
                 <div className="grid grid-cols-3 gap-2 w-120">
                   {player.cards.map((cardId) => {
@@ -206,60 +156,131 @@ export const Game = () => {
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
               <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold">Resources</h3>
                 <div className="flex flex-col gap-2">
                   {player.resources.map((resourceId) => {
+                    const resourceSettings =
+                      settings.resourceSettings[resourceId];
+
+                    const className: string[] = ["fixed"];
+                    const style: React.CSSProperties = {};
+
+                    switch (resourceSettings.positionY) {
+                      case "top":
+                        className.push("top-0");
+                        break;
+                      case "bottom":
+                        className.push("bottom-0");
+                        break;
+                      case "center":
+                        className.push("top-1/2 -translate-y-1/2");
+                        break;
+                    }
+
+                    switch (resourceSettings.positionX) {
+                      case "left":
+                        className.push("left-0");
+                        break;
+                      case "right":
+                        className.push("right-0");
+                        break;
+                      case "center":
+                        className.push("left-1/2 -translate-x-1/2");
+                        break;
+                    }
+
                     return (
                       <div
                         key={resourceId}
-                        className="flex flex-col text-center p-2 w-35"
+                        className={className.join(" ")}
+                        style={style}
                       >
-                        <div className="flex items-center justify-center gap-2 mb-2">
-                          <button
-                            onClick={() => decrementResource(resourceId)}
-                            className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                          >
-                            -
-                          </button>
-                          <p className="text-md font-bold min-w-[2rem]">
-                            {world.resourcesById[resourceId].value}
-                          </p>
-                          <button
-                            onClick={() => incrementResource(resourceId)}
-                            className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                          >
-                            +
-                          </button>
+                        <div
+                          key={resourceId}
+                          className="flex flex-col text-center p-2 w-30"
+                        >
+                          <div className="flex items-center justify-center gap-2 mb-2">
+                            <button
+                              onClick={() => decrementResource(resourceId)}
+                              className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                            >
+                              -
+                            </button>
+                            <p className="text-md font-bold min-w-[2rem]">
+                              {world.resourcesById[resourceId].value}
+                            </p>
+                            <button
+                              onClick={() => incrementResource(resourceId)}
+                              className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <img
+                            className=""
+                            src={world.resourcesById[resourceId].imageUri}
+                          />
                         </div>
-                        <img
-                          className=""
-                          src={world.resourcesById[resourceId].imageUri}
-                        />
-                        <h3 className="text-md font-bold">
-                          {world.resourcesById[resourceId].name}
-                        </h3>
                       </div>
                     );
                   })}
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold">Decks</h3>
-                <div className="flex flex-col gap-2">
-                  {player.decks.map((deckId) => {
-                    return (
-                      <div key={deckId} className="flex flex-col p-2 w-35">
-                        <h3 className="text-md font-bold">
-                          {world.decksById[deckId].name}
-                        </h3>
-                        <Deck deckId={deckId} world={world} flipCard={flipCard} moveCardToDeck={moveCardToDeck} />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              {player.decks.map((deckId) => {
+                const deckSettings = settings.deckSettings[deckId];
+
+                const className: string[] = [];
+                const style: React.CSSProperties = {};
+
+                if (deckSettings) {
+                  className.push("fixed");
+
+                  switch (deckSettings.positionY) {
+                    case "top":
+                      className.push("top-0");
+                      break;
+                    case "bottom":
+                      // className.push("bottom-0")
+                      style.bottom = "-30px";
+                      break;
+                    case "center":
+                      className.push("top-1/2 -translate-y-1/2");
+                      break;
+                  }
+
+                  switch (deckSettings.positionX) {
+                    case "left":
+                      className.push("left-0");
+                      break;
+                    case "right":
+                      className.push("right-0");
+                      break;
+                    case "center":
+                      className.push("left-1/2 -translate-x-1/2");
+                      break;
+                  }
+                }
+
+                return (
+                  <div
+                    key={deckId}
+                    className={className.join(" ")}
+                    style={style}
+                  >
+                    <h3 className="text-lg font-bold text-center">
+                      {world.decksById[deckId].name}
+                    </h3>
+                    <GameDeck
+                      deck={world.decksById[deckId]}
+                      allDecks={Object.values(world.decksById)}
+                      cardsById={world.cardsById}
+                      flipCard={flipCard}
+                      moveCardToDeck={moveCardToDeck}
+                    />
+                  </div>
+                );
+              })}
             </div>
           );
         })}
