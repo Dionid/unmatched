@@ -1,6 +1,5 @@
 export type CardId = string;
 export type DeckId = string;
-export type CharacterId = string;
 export type ResourceId = string;
 export type PlayerId = string;
 export type WorldId = string;
@@ -14,14 +13,6 @@ export type Card = {
     frontImageUri: string;
     backImageUri: string;
     isFaceUp: boolean;
-}
-
-export type Character = {
-    t: 'character';
-    id: CharacterId;
-    name: string;
-    description: string;
-    imageUri: string;
 }
 
 export type Resource = {
@@ -55,7 +46,6 @@ export type Player = {
 
     // # Ingame
     decks: DeckId[];
-    characters: CharacterId[];
     cards: CardId[];
     resources: ResourceId[];
 }
@@ -70,6 +60,5 @@ export type World = {
 
     cardsById: Record<CardId, Card>;
     decksById: Record<DeckId, Deck>;
-    charactersById: Record<CharacterId, Character>;
     resourcesById: Record<ResourceId, Resource>;
 }

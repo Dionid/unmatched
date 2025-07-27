@@ -10,7 +10,6 @@ export const Game = () => {
     playersById: {},
     cardsById: {},
     decksById: {},
-    charactersById: {},
     resourcesById: {},
   });
 
@@ -94,17 +93,6 @@ export const Game = () => {
       t: "world",
       id: "1",
       currentPlayerId: "1",
-      charactersById: {
-        "1": {
-          t: "character",
-          id: "1",
-          name: "Jekyll & Hyde",
-          description:
-            "Jekyll & Hyde is a hero that can transform into a monster.",
-          imageUri:
-            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/minis/NpoqqaDotShInZPyA0iGz.png",
-        },
-      },
       cardsById: {
         "1": {
           t: "card",
@@ -185,7 +173,6 @@ export const Game = () => {
           id: "1",
           name: "Player 1",
           decks: ["1", "2", "3"],
-          characters: ["1"],
           cards: ["1", "2", "3", "4"],
           resources: ["1"],
         },
@@ -200,29 +187,6 @@ export const Game = () => {
           return (
             <div key={id} className="flex gap-4 w-md">
               <h2 className="text-xl font-bold">{player.name}</h2>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold">Characters</h3>
-                <div className="flex flex-col gap-2">
-                  {player.characters.map((characterId) => {
-                    return (
-                      <GameCard
-                        key={characterId}
-                        frontImageUri={
-                          world.charactersById[characterId].imageUri
-                        }
-                        backImageUri={
-                          world.charactersById[characterId].imageUri
-                        }
-                        name={world.charactersById[characterId].name}
-                        isFaceUp={true}
-                        onFlip={() => {}} // Characters can't be flipped
-                        onMoveToDeck={() => {}} // Characters can't be moved to decks
-                        availableDecks={[]}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
               <div className="flex flex-col gap-2">
                 <h3 className="text-lg font-bold">Cards</h3>
                 <div className="grid grid-cols-3 gap-2 w-120">
