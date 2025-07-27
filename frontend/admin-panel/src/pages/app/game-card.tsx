@@ -92,6 +92,20 @@ export const GameCard = ({
   );
 };
 
+export const GamePile = ({
+  cardsById,
+  deck,
+}: {
+  cardsById: Record<CardId, Card>;
+  deck: Deck;
+}) => {
+  return (
+    <div className="w-30 h-42 transition-transform hover:scale-103 cursor-pointer">
+      <img src={cardsById[deck.cards[0]].backImageUri} alt="Draw" />
+    </div>
+  );
+}
+
 export const GameDeckInternal = ({
   deck,
   cardsById,
@@ -120,11 +134,7 @@ export const GameDeckInternal = ({
   }
 
   if (deck.type === "draw" || deck.type === "discard") {
-    return (
-      <div className="w-30 h-42 transition-transform hover:scale-103 cursor-pointer">
-        <img src={cardsById[deck.cards[0]].backImageUri} alt="Draw" />
-      </div>
-    );
+    return <GamePile cardsById={cardsById} deck={deck} />;
   }
 
   return deck.cards.map((cardId) => {
