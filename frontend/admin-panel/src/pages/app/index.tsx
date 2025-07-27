@@ -234,12 +234,7 @@ export const Game = () => {
                         backImageUri={world.cardsById[cardId].backImageUri}
                         name={world.cardsById[cardId].name}
                         isFaceUp={true}
-                        onFlip={() => flipCard(cardId)}
-                        onMoveToDeck={(deckId) => moveCardToDeck(cardId, deckId)}
-                        availableDecks={Object.entries(world.decksById).map(([id, deck]) => ({
-                          id,
-                          name: deck.name
-                        }))}
+                        disableMenu={true}
                       />
                     );
                   })}

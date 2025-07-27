@@ -10,13 +10,15 @@ export const GameCard = ({
   onClick,
   onFlip,
   onMoveToDeck,
-  availableDecks = []
+  availableDecks = [],
+  disableMenu = false
 }: { 
   frontImageUri: string; 
   backImageUri: string; 
   alt?: string; 
   name: string; 
   isFaceUp: boolean; 
+  disableMenu?: boolean;
   onClick?: () => void;
   onFlip?: () => void;
   onMoveToDeck?: (deckId: string) => void;
@@ -46,7 +48,7 @@ export const GameCard = ({
   };
 
   return (
-    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+    <DropdownMenu open={isMenuOpen && !disableMenu} onOpenChange={setIsMenuOpen}>
       <DropdownMenuTrigger asChild>
         <div 
           className="flex flex-col text-center p-2 w-35 cursor-pointer hover:bg-gray-100 rounded transition-colors" 
