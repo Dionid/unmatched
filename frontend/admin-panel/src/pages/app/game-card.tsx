@@ -76,7 +76,11 @@ export const GameCard = ({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuItem onClick={handleFlip}>Flip</DropdownMenuItem>
+        {
+          onFlip && (
+            <DropdownMenuItem onClick={handleFlip}>Flip</DropdownMenuItem>
+          )
+        }
         {availableDecks
           .filter((deck) => deck.id !== currentDeckId)
           .map((deck) => (
@@ -155,7 +159,6 @@ export const GamePile = ({
 export const GameDeckInternal = ({
   deck,
   cardsById,
-  flipCard,
   moveCardToDeck,
   allDecks,
   onTakeTopCard,
@@ -204,7 +207,7 @@ export const GameDeckInternal = ({
     const cardStyle: React.CSSProperties = {};
 
     const className: string[] = [
-      "w-30 hover:-translate-y-7 transition-transform",
+      "w-30 hover:-translate-y-20 transition-transform hover:scale-200",
     ];
 
     return (
@@ -216,7 +219,6 @@ export const GameDeckInternal = ({
         backImageUri={cardsById[cardId].backImageUri}
         name={cardsById[cardId].name}
         isFaceUp={true}
-        // onFlip={() => flipCard(cardId)}
         onMoveToDeck={(targetDeckId) =>
           moveCardToDeck(cardId, deck.id, targetDeckId)
         }
@@ -253,7 +255,7 @@ export const GameDeck = ({
   return (
     <div className={"flex bg-gray-300 rounded-md"}>
       {/* Rotated deck name on the left */}
-      <div className="flex items-center justify-center w-10">
+      <div className="flex items-center justify-center w-8 bg-gray-100 rounded-l-md">
         <h3 className="text-md font-semibold transform -rotate-90 whitespace-nowrap">
           {deck.name}
         </h3>

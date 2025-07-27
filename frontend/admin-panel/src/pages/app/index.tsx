@@ -292,7 +292,7 @@ export const Game = () => {
                   >
                     {/* Drag handle with dots icon */}
                     <div 
-                      className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
+                      className="absolute top-0 left-0 w-6 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
                       onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
                     >
                       <div className="flex flex-col gap-0.5">
@@ -309,31 +309,36 @@ export const Game = () => {
                     
                     <div
                       key={resourceId}
-                      className="flex flex-col text-center p-2 w-30"
+                      className="flex flex-col w-30"
                     >
-                      <h3 className="text-md font-semibold">
-                        {world.resourcesById[resourceId].name}
-                      </h3>
-                      <img
-                        className="rounded-[50%] mt-2"
-                        src={world.resourcesById[resourceId].imageUri}
-                      />
-                      <div className="flex items-center justify-center gap-2 mt-2">
-                        <button
-                          onClick={() => decrementResource(resourceId)}
-                          className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                        >
-                          -
-                        </button>
-                        <p className="text-md font-bold min-w-[2rem]">
-                          {world.resourcesById[resourceId].value}
-                        </p>
-                        <button
-                          onClick={() => incrementResource(resourceId)}
-                          className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                        >
-                          +
-                        </button>
+                      <div className="flex items-center justify-center bg-gray-100 rounded-t-md">
+                        <h3 className="text-md font-semibold">
+                          {world.resourcesById[resourceId].name}
+                        </h3>
+                      </div>
+
+                      <div className="p-4 pt-2">
+                        <img
+                          className="rounded-[50%] mt-2"
+                          src={world.resourcesById[resourceId].imageUri}
+                        />
+                        <div className="flex items-center justify-center gap-2 mt-2">
+                          <button
+                            onClick={() => decrementResource(resourceId)}
+                            className="bg-white rounded-md w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer"
+                          >
+                            -
+                          </button>
+                          <p className="text-md font-bold min-w-[1.5rem]">
+                            {world.resourcesById[resourceId].value}
+                          </p>
+                          <button
+                            onClick={() => incrementResource(resourceId)}
+                            className="bg-white rounded-md w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer"
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -359,7 +364,7 @@ export const Game = () => {
                   >
                     {/* Drag handle with dots icon */}
                     <div 
-                      className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
+                      className="absolute top-0 left-0 w-8 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
                       onMouseDown={(e) => handleMouseDown(e, deckId, 'deck')}
                     >
                       <div className="flex flex-col gap-0.5">
