@@ -17,14 +17,7 @@ const AppInner = () => {
   return (
     <Routes>
       <Route path="/" element={<Main />} />
-
-      {/* <Route path="auth" element={<AuthLayout />}>
-        <Route index path="signin" element={<LoginPage />} />
-        <Route index path="signup" element={<SignUpPage />} />
-      </Route> */}
-
       <Route path="app" element={<AppLayout />}>
-        {/* <Route index element={<DashboardPage />} /> */}
       </Route>
     </Routes>
   );
