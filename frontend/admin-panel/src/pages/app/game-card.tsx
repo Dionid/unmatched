@@ -121,15 +121,20 @@ export const GameDeck = ({
 
   return (
     <div className={"flex bg-gray-200 rounded-md"}>
-      <h3 className="text-md font-semibold">
-        {deck.name}
-      </h3>
+      {/* Rotated deck name on the left */}
+      <div className="flex items-center justify-center px-2 w-10">
+        <h3 className="text-md font-semibold transform -rotate-90 whitespace-nowrap">
+          {deck.name}
+        </h3>
+      </div>
+      
+      {/* Cards container */}
       <div className={`flex ${deckClassName.join(" ")}`}>
       {deck.cards.map((cardId) => {
         const cardStyle: React.CSSProperties = {};
 
         const className: string[] = [
-          "w-30 hover:-translate-y-16 transition-transform hover:scale-150"
+          "w-30 hover:-translate-y-10 transition-transform hover:scale-150"
         ]
 
         return (

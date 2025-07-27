@@ -319,7 +319,7 @@ export const Game = () => {
                   >
                     {/* Drag handle with dots icon */}
                     <div 
-                      className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors z-10"
+                      className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
                       onMouseDown={(e) => handleMouseDown(e, deckId, 'deck')}
                     >
                       <div className="flex flex-col gap-0.5">
