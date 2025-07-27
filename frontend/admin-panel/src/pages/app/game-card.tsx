@@ -61,7 +61,7 @@ export const GameCard = ({
     >
       <DropdownMenuTrigger asChild>
         <div
-          className={`p-2 cursor-pointer hover:bg-gray-100 rounded transition-colors ${className}`}
+          className={`cursor-pointer ${className}`}
           style={style}
           onContextMenu={(e) => {
             e.preventDefault();
@@ -69,7 +69,7 @@ export const GameCard = ({
           }}
         >
           <img
-            className="border-1 border-gray-300"
+            className="shadow-sm"
             src={isFaceUp ? frontImageUri : backImageUri}
             alt={alt ?? name}
           />
@@ -109,52 +109,58 @@ export const GameDeck = ({
     targetDeckId: string
   ) => void;
 }) => {
-  const deckClassName: string[] = []
-  
-  if (deck.grouped) {
-    deckClassName.push("relative")
-  }
+  const deckClassName: string[] = [];
 
-  if (deck.cards.length == 0) {
-    deckClassName.push("w-24 h-30")
+  if (deck.grouped) {
+    deckClassName.push("relative");
   }
 
   return (
-    <div className={"flex bg-gray-200 rounded-md"}>
+    <div className={"flex bg-gray-300 rounded-md"}>
       {/* Rotated deck name on the left */}
-      <div className="flex items-center justify-center px-2 w-10">
+      <div className="flex items-center justify-center w-10">
         <h3 className="text-md font-semibold transform -rotate-90 whitespace-nowrap">
           {deck.name}
         </h3>
       </div>
-      
+
       {/* Cards container */}
-      <div className={`flex ${deckClassName.join(" ")}`}>
-      {deck.cards.map((cardId) => {
-        const cardStyle: React.CSSProperties = {};
+      <div className={`flex p-2 gap-1 ${deckClassName.join(" ")}`}>
 
-        const className: string[] = [
-          "w-30 hover:-translate-y-10 transition-transform hover:scale-150"
-        ]
+        {/* Empty card */}
+        {deck.cards.length == 0 && (
+          <div className="w-27 h-40">
+            <div className="w-full h-full bg-gray-300 rounded-md flex items-center justify-center">
+              <p className="text-sm text-gray-500">Empty</p>
+            </div>
+          </div>
+        )}
 
-        return (
-          <GameCard
-            key={cardId}
-            className={className.join(" ")}
-            style={cardStyle}
-            frontImageUri={cardsById[cardId].frontImageUri}
-            backImageUri={cardsById[cardId].backImageUri}
-            name={cardsById[cardId].name}
-            isFaceUp={cardsById[cardId].isFaceUp}
-            onFlip={() => flipCard(cardId)}
-            onMoveToDeck={(targetDeckId) =>
-              moveCardToDeck(cardId, deck.id, targetDeckId)
-            }
-            availableDecks={allDecks}
-            currentDeckId={deck.id}
-          />
-        );
-      })}
+        {deck.cards.map((cardId) => {
+          const cardStyle: React.CSSProperties = {};
+
+          const className: string[] = [
+            "w-30 hover:-translate-y-10 transition-transform hover:scale-150",
+          ];
+
+          return (
+            <GameCard
+              key={cardId}
+              className={className.join(" ")}
+              style={cardStyle}
+              frontImageUri={cardsById[cardId].frontImageUri}
+              backImageUri={cardsById[cardId].backImageUri}
+              name={cardsById[cardId].name}
+              isFaceUp={cardsById[cardId].isFaceUp}
+              onFlip={() => flipCard(cardId)}
+              onMoveToDeck={(targetDeckId) =>
+                moveCardToDeck(cardId, deck.id, targetDeckId)
+              }
+              availableDecks={allDecks}
+              currentDeckId={deck.id}
+            />
+          );
+        })}
       </div>
     </div>
   );

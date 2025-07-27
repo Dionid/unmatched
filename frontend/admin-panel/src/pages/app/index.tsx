@@ -302,7 +302,7 @@ export const Game = () => {
               {player.decks.map((deckId) => {
                 const deckSettings = settings.deckSettings[deckId];
 
-                const className: string[] = ["fixed bg-gray-100 rounded-md"];
+                const className: string[] = ["fixed bg-gray-100 rounded-md shadow-md"];
                 const style: React.CSSProperties = {};
 
                 if (deckSettings) {
