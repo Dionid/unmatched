@@ -16,42 +16,42 @@ export const Game = () => {
 
   // Function to increment resource value
   const incrementResource = (resourceId: string) => {
-    setWorld(prevWorld => ({
+    setWorld((prevWorld) => ({
       ...prevWorld,
       resourcesById: {
         ...prevWorld.resourcesById,
         [resourceId]: {
           ...prevWorld.resourcesById[resourceId],
-          value: prevWorld.resourcesById[resourceId].value + 1
-        }
-      }
+          value: prevWorld.resourcesById[resourceId].value + 1,
+        },
+      },
     }));
   };
 
   // Function to decrement resource value
   const decrementResource = (resourceId: string) => {
-    setWorld(prevWorld => ({
+    setWorld((prevWorld) => ({
       ...prevWorld,
       resourcesById: {
         ...prevWorld.resourcesById,
         [resourceId]: {
           ...prevWorld.resourcesById[resourceId],
-          value: Math.max(0, prevWorld.resourcesById[resourceId].value - 1)
-        }
-      }
+          value: Math.max(0, prevWorld.resourcesById[resourceId].value - 1),
+        },
+      },
     }));
   };
 
   const flipCard = (cardId: string) => {
-    setWorld(prevWorld => ({
+    setWorld((prevWorld) => ({
       ...prevWorld,
       cardsById: {
         ...prevWorld.cardsById,
         [cardId]: {
           ...prevWorld.cardsById[cardId],
-          isFaceUp: !prevWorld.cardsById[cardId].isFaceUp
-        }
-      }
+          isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
+        },
+      },
     }));
   };
 
@@ -65,41 +65,51 @@ export const Game = () => {
           t: "character",
           id: "1",
           name: "Jekyll & Hyde",
-          description: "Jekyll & Hyde is a hero that can transform into a monster.",
-          imageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/minis/NpoqqaDotShInZPyA0iGz.png"
-        }
+          description:
+            "Jekyll & Hyde is a hero that can transform into a monster.",
+          imageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/minis/NpoqqaDotShInZPyA0iGz.png",
+        },
       },
       cardsById: {
         "1": {
           t: "card",
           id: "1",
           name: "Jekyll & Hyde 1",
-          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/eEYajsgspLNDHftUQoyh2.webp",
-          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          frontImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/eEYajsgspLNDHftUQoyh2.webp",
+          backImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
           isFaceUp: true,
         },
         "2": {
           t: "card",
           id: "2",
           name: "Jekyll & Hyde 2",
-          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/-05aruis4rhEh7psaXnea.webp",
-          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          frontImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/-05aruis4rhEh7psaXnea.webp",
+          backImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
           isFaceUp: true,
         },
         "3": {
           t: "card",
           id: "3",
           name: "Jekyll & Hyde 3",
-          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/kAt5fbRGnyOOoLbnH3IHj.webp",
-          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          frontImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/kAt5fbRGnyOOoLbnH3IHj.webp",
+          backImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
           isFaceUp: true,
         },
         "4": {
           t: "card",
           id: "4",
           name: "Jekyll & Hyde 4",
-          frontImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/zCwYyB4XLQ5xfbAfUEAhk.webp",
-          backImageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
+          frontImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/decks/zCwYyB4XLQ5xfbAfUEAhk.webp",
+          backImageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
           isFaceUp: false,
         },
       },
@@ -128,10 +138,12 @@ export const Game = () => {
           t: "resource",
           id: "1",
           name: "Health",
-          description: "Health is a resource that can be used to heal characters.",
-          imageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/avatars/3G9V5x3JHXMZ4G5H3Kk7s.webp",
+          description:
+            "Health is a resource that can be used to heal characters.",
+          imageUri:
+            "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/avatars/3G9V5x3JHXMZ4G5H3Kk7s.webp",
           value: 10,
-        }
+        },
       },
       playersById: {
         "1": {
@@ -142,105 +154,129 @@ export const Game = () => {
           characters: ["1"],
           cards: ["1", "2", "3", "4"],
           resources: ["1"],
-        }
+        },
       },
     });
   }, [setWorld]);
 
   return (
     <div className="flex gap-4 p-6 w-full">
-
       <div className="flex flex-col gap-4">
-        {
-          Object.entries(world.playersById).map(([id, player]) => {
-            return (
-              <div key={id} className="flex gap-4 w-md">
-                <h2 className="text-xl font-bold">{player.name}</h2>
+        {Object.entries(world.playersById).map(([id, player]) => {
+          return (
+            <div key={id} className="flex gap-4 w-md">
+              <h2 className="text-xl font-bold">{player.name}</h2>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold">Characters</h3>
                 <div className="flex flex-col gap-2">
-                  <h3 className="text-lg font-bold">Characters</h3>
-                  <div className="flex flex-col gap-2">
-                    {
-                      player.characters.map((characterId) => {
-                        return (
-                          <GameCard frontImageUri={world.charactersById[characterId].imageUri} backImageUri={world.charactersById[characterId].imageUri} name={world.charactersById[characterId].name} isFaceUp={true} />
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-lg font-bold">Cards</h3>
-                  <div className="grid grid-cols-3 gap-2 w-120">
-                    {
-                      player.cards.map((cardId) => {
-                        return (
-                          <GameCard frontImageUri={world.cardsById[cardId].frontImageUri} backImageUri={world.cardsById[cardId].backImageUri} name={world.cardsById[cardId].name} isFaceUp={true} />
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-lg font-bold">Resources</h3>
-                  <div className="flex flex-col gap-2">
-                    {
-                      player.resources.map((resourceId) => {
-                        return (
-                          <div key={resourceId} className="flex flex-col text-center p-2 w-35">
-                            <div className="flex items-center justify-center gap-2 mb-2">
-                              <button 
-                                onClick={() => decrementResource(resourceId)}
-                                className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                              >
-                                -
-                              </button>
-                              <p className="text-md font-bold min-w-[2rem]">{world.resourcesById[resourceId].value}</p>
-                              <button 
-                                onClick={() => incrementResource(resourceId)}
-                                className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                              >
-                                +
-                              </button>
-                            </div>
-                            <img className="" src={world.resourcesById[resourceId].imageUri} />
-                            <h3 className="text-md font-bold">{world.resourcesById[resourceId].name}</h3>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-lg font-bold">Decks</h3>
-                  <div className="flex flex-col gap-2">
-                    {
-                      player.decks.map((deckId) => {
-                        return (
-                          <div key={deckId} className="flex flex-col p-2 w-35">
-                            <h3 className="text-md font-bold">{world.decksById[deckId].name}</h3>
-                            <div className="grid grid-cols-3 gap-2 w-120">
-                              {
-                                world.decksById[deckId].cards.map((cardId) => {
-                                  return (
-                                    <GameCard key={cardId} frontImageUri={world.cardsById[cardId].frontImageUri} backImageUri={world.cardsById[cardId].backImageUri} name={world.cardsById[cardId].name} isFaceUp={world.cardsById[cardId].isFaceUp} onClick={() => flipCard(cardId)} />
-                                  )
-                                })
-                              }
-                            </div>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
+                  {player.characters.map((characterId) => {
+                    return (
+                      <GameCard
+                        frontImageUri={
+                          world.charactersById[characterId].imageUri
+                        }
+                        backImageUri={
+                          world.charactersById[characterId].imageUri
+                        }
+                        name={world.charactersById[characterId].name}
+                        isFaceUp={true}
+                      />
+                    );
+                  })}
                 </div>
               </div>
-            )
-          })
-        }
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold">Cards</h3>
+                <div className="grid grid-cols-3 gap-2 w-120">
+                  {player.cards.map((cardId) => {
+                    return (
+                      <GameCard
+                        frontImageUri={world.cardsById[cardId].frontImageUri}
+                        backImageUri={world.cardsById[cardId].backImageUri}
+                        name={world.cardsById[cardId].name}
+                        isFaceUp={true}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold">Resources</h3>
+                <div className="flex flex-col gap-2">
+                  {player.resources.map((resourceId) => {
+                    return (
+                      <div
+                        key={resourceId}
+                        className="flex flex-col text-center p-2 w-35"
+                      >
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <button
+                            onClick={() => decrementResource(resourceId)}
+                            className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                          >
+                            -
+                          </button>
+                          <p className="text-md font-bold min-w-[2rem]">
+                            {world.resourcesById[resourceId].value}
+                          </p>
+                          <button
+                            onClick={() => incrementResource(resourceId)}
+                            className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                          >
+                            +
+                          </button>
+                        </div>
+                        <img
+                          className=""
+                          src={world.resourcesById[resourceId].imageUri}
+                        />
+                        <h3 className="text-md font-bold">
+                          {world.resourcesById[resourceId].name}
+                        </h3>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold">Decks</h3>
+                <div className="flex flex-col gap-2">
+                  {player.decks.map((deckId) => {
+                    return (
+                      <div key={deckId} className="flex flex-col p-2 w-35">
+                        <h3 className="text-md font-bold">
+                          {world.decksById[deckId].name}
+                        </h3>
+                        <div className="grid grid-cols-3 gap-2 w-120">
+                          {world.decksById[deckId].cards.map((cardId) => {
+                            return (
+                              <GameCard
+                                key={cardId}
+                                frontImageUri={
+                                  world.cardsById[cardId].frontImageUri
+                                }
+                                backImageUri={
+                                  world.cardsById[cardId].backImageUri
+                                }
+                                name={world.cardsById[cardId].name}
+                                isFaceUp={world.cardsById[cardId].isFaceUp}
+                                onClick={() => flipCard(cardId)}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export const AppLayout = () => {
   // # Last step: show success message
