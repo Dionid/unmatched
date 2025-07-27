@@ -1,0 +1,72 @@
+export type CardId = string;
+export type DeckId = string;
+export type CharacterId = string;
+export type ResourceId = string;
+export type PlayerId = string;
+export type WorldId = string;
+export type MapId = string;
+export type CharacterBundleId = string;
+
+export type Card = {
+    t: 'card';
+    id: CardId;
+    frontImageUri: string;
+    backImageUri: string;
+}
+
+export type Character = {
+    t: 'character';
+    id: CharacterId;
+    name: string;
+    description: string;
+    imageUri: string;
+}
+
+export type Resource = {
+    t: 'resource';
+    id: ResourceId;
+    name: string;
+    description: string;
+    imageUri: string;
+    value: number;
+}
+
+// export type CharacterBundle = {
+//     t: 'characterBundle';
+//     id: CharacterBundleId;
+//     characters: CharacterId[];
+//     cards: CardId[];
+//     resources: ResourceId[];
+// }
+
+export type Deck = {
+    t: 'deck';
+    id: DeckId;
+    cards: CardId[];
+}
+
+export type Player = {
+    t: 'player';
+    id: PlayerId;
+    name: string;
+
+    // # Ingame
+    decks: DeckId[];
+    characters: CharacterId[];
+    cards: CardId[];
+    resources: ResourceId[];
+}
+
+// # Current game world with all data
+export type World = {
+    t: 'world';
+    id: WorldId;
+    currentPlayerId: PlayerId;
+
+    playersById: Record<PlayerId, Player>;
+
+    cardsById: Record<CardId, Card>;
+    decksById: Record<DeckId, Deck>;
+    charactersById: Record<CharacterId, Character>;
+    resourcesById: Record<ResourceId, Resource>;
+}
