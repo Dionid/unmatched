@@ -49,6 +49,7 @@ export const Game = () => {
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
+  const [dragType, setDragType] = useState<'resource' | 'deck' | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<HTMLDivElement>(null);
 
@@ -99,28 +100,49 @@ export const Game = () => {
     }));
   };
 
+  // Function to update deck position
+  const updateDeckPosition = (deckId: string, x: number, y: number) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      deckSettings: {
+        ...prevSettings.deckSettings,
+        [deckId]: {
+          ...prevSettings.deckSettings[deckId],
+          positionX: `${x}px`,
+          positionY: `${y}px`,
+        },
+      },
+    }));
+  };
+
   // Drag handlers
-  const handleMouseDown = (e: React.MouseEvent, resourceId: string) => {
+  const handleMouseDown = (e: React.MouseEvent, id: string, type: 'resource' | 'deck') => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
     
     setDragOffset({ x: offsetX, y: offsetY });
-    setIsDragging(resourceId);
+    setIsDragging(id);
+    setDragType(type);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return;
+    if (!isDragging || !dragType) return;
     
     const newX = e.clientX - dragOffset.x;
     const newY = e.clientY - dragOffset.y;
     
-    updateResourcePosition(isDragging, newX, newY);
+    if (dragType === 'resource') {
+      updateResourcePosition(isDragging, newX, newY);
+    } else if (dragType === 'deck') {
+      updateDeckPosition(isDragging, newX, newY);
+    }
   };
 
   const handleMouseUp = () => {
     setIsDragging(null);
+    setDragType(null);
   };
 
   // Add global mouse event listeners
@@ -134,7 +156,7 @@ export const Game = () => {
         document.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  }, [isDragging, dragOffset]);
+  }, [isDragging, dragOffset, dragType]);
 
   const flipCard = (cardId: string) => {
     setWorld((prevWorld) => ({
@@ -231,7 +253,7 @@ export const Game = () => {
                     {/* Drag handle with dots icon */}
                     <div 
                       className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
-                      onMouseDown={(e) => handleMouseDown(e, resourceId)}
+                      onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
                     >
                       <div className="flex flex-col gap-0.5">
                         <div className="flex gap-0.5">
@@ -280,12 +302,10 @@ export const Game = () => {
               {player.decks.map((deckId) => {
                 const deckSettings = settings.deckSettings[deckId];
 
-                const className: string[] = [];
+                const className: string[] = ["fixed bg-gray-100 rounded-md"];
                 const style: React.CSSProperties = {};
 
                 if (deckSettings) {
-                  className.push("fixed");
-
                   style.left = deckSettings.positionX;
                   style.top = deckSettings.positionY;
                 }
@@ -295,14 +315,34 @@ export const Game = () => {
                     key={deckId}
                     className={className.join(" ")}
                     style={style}
+                    ref={dragRef}
                   >
-                    <GameDeck
-                      deck={world.decksById[deckId]}
-                      allDecks={Object.values(world.decksById)}
-                      cardsById={world.cardsById}
-                      flipCard={flipCard}
-                      moveCardToDeck={moveCardToDeck}
-                    />
+                    {/* Drag handle with dots icon */}
+                    <div 
+                      className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors z-10"
+                      onMouseDown={(e) => handleMouseDown(e, deckId, 'deck')}
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex gap-0.5">
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                        </div>
+                        <div className="flex gap-0.5">
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-8">
+                      <GameDeck
+                        deck={world.decksById[deckId]}
+                        allDecks={Object.values(world.decksById)}
+                        cardsById={world.cardsById}
+                        flipCard={flipCard}
+                        moveCardToDeck={moveCardToDeck}
+                      />
+                    </div>
                   </div>
                 );
               })}
