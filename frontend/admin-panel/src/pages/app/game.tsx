@@ -5,6 +5,7 @@ export type PlayerId = string;
 export type WorldId = string;
 export type MapId = string;
 export type CharacterBundleId = string;
+export type ComponentId = string;
 
 export type Card = {
     t: 'card';
@@ -37,7 +38,7 @@ export type Deck = {
     id: DeckId;
     name: string;
     cards: CardId[];
-    grouped: boolean;
+    type: "hand" | "discard" | "draw";
 }
 
 export type Player = {

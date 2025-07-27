@@ -111,10 +111,6 @@ export const GameDeck = ({
 }) => {
   const deckClassName: string[] = [];
 
-  if (deck.grouped) {
-    deckClassName.push("relative");
-  }
-
   return (
     <div className={"flex bg-gray-300 rounded-md"}>
       {/* Rotated deck name on the left */}
