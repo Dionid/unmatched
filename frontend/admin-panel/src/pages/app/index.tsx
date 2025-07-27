@@ -18,6 +18,9 @@ export type Settings = {
     {
       positionY?: string;
       positionX?: string;
+      // Add pixel-based positioning for draggable resources
+      pixelX?: number;
+      pixelY?: number;
     }
   >;
 };
@@ -47,6 +50,8 @@ export const Game = () => {
       "1": {
         positionY: "center",
         positionX: "left",
+        pixelX: 20,
+        pixelY: 50,
       },
     },
   });
@@ -81,6 +86,58 @@ export const Game = () => {
         },
       },
     }));
+  };
+
+  // Function to update resource position when dragged
+  const updateResourcePosition = (resourceId: string, x: number, y: number) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      resourceSettings: {
+        ...prevSettings.resourceSettings,
+        [resourceId]: {
+          ...prevSettings.resourceSettings[resourceId],
+          pixelX: x,
+          pixelY: y,
+        },
+      },
+    }));
+  };
+
+  // Drag event handlers
+  const handleDragStart = (e: React.DragEvent, resourceId: string) => {
+    e.dataTransfer.setData('text/plain', resourceId);
+    e.dataTransfer.effectAllowed = 'move';
+    
+    // Calculate the offset from the top-left corner of the dragged element
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    // Store the offset in dataTransfer for use during drop
+    e.dataTransfer.setData('offsetX', offsetX.toString());
+    e.dataTransfer.setData('offsetY', offsetY.toString());
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const resourceId = e.dataTransfer.getData('text/plain');
+    const offsetX = parseFloat(e.dataTransfer.getData('offsetX') || '0');
+    const offsetY = parseFloat(e.dataTransfer.getData('offsetY') || '0');
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - offsetX;
+    const y = e.clientY - rect.top - offsetY;
+    
+    updateResourcePosition(resourceId, x, y);
   };
 
   const flipCard = (cardId: string) => {
@@ -134,7 +191,11 @@ export const Game = () => {
   };
 
   return (
-    <div className="w-full h-full p-6 relative">
+    <div 
+      className="w-full h-full p-6 relative"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <div className="flex flex-col gap-4">
         {Object.entries(world.playersById).map(([id, player]) => {
           return (
@@ -160,31 +221,38 @@ export const Game = () => {
               {player.resources.map((resourceId) => {
                 const resourceSettings = settings.resourceSettings[resourceId];
 
-                const className: string[] = ["fixed bg-gray-200 rounded-md"];
+                const className: string[] = ["fixed bg-gray-200 rounded-md cursor-move"];
                 const style: React.CSSProperties = {};
 
-                switch (resourceSettings.positionY) {
-                  case "top":
-                    className.push("top-0");
-                    break;
-                  case "bottom":
-                    className.push("bottom-0");
-                    break;
-                  case "center":
-                    className.push("top-1/2 -translate-y-1/2");
-                    break;
-                }
+                // Use pixel-based positioning if available, otherwise fall back to preset positions
+                if (resourceSettings.pixelX !== undefined && resourceSettings.pixelY !== undefined) {
+                  style.left = `${resourceSettings.pixelX}px`;
+                  style.top = `${resourceSettings.pixelY}px`;
+                } else {
+                  // Fallback to preset positioning
+                  switch (resourceSettings.positionY) {
+                    case "top":
+                      className.push("top-0");
+                      break;
+                    case "bottom":
+                      className.push("bottom-0");
+                      break;
+                    case "center":
+                      className.push("top-1/2 -translate-y-1/2");
+                      break;
+                  }
 
-                switch (resourceSettings.positionX) {
-                  case "left":
-                    className.push("left-0");
-                    break;
-                  case "right":
-                    className.push("right-0");
-                    break;
-                  case "center":
-                    className.push("left-1/2 -translate-x-1/2");
-                    break;
+                  switch (resourceSettings.positionX) {
+                    case "left":
+                      className.push("left-0");
+                      break;
+                    case "right":
+                      className.push("right-0");
+                      break;
+                    case "center":
+                      className.push("left-1/2 -translate-x-1/2");
+                      break;
+                  }
                 }
 
                 return (
@@ -192,6 +260,9 @@ export const Game = () => {
                     key={resourceId}
                     className={className.join(" ")}
                     style={style}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, resourceId)}
+                    onDragEnd={handleDragEnd}
                   >
                     <div
                       key={resourceId}
