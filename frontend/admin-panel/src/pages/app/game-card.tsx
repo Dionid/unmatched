@@ -257,7 +257,7 @@ export const GameDeck = ({
       {/* Rotated deck name on the left */}
       <div className="flex items-center justify-center w-8 bg-gray-100 rounded-l-md">
         <h3 className="text-md font-semibold transform -rotate-90 whitespace-nowrap">
-          {deck.name}
+          {deck.name} <span className="text-sm text-gray-600">({deck.cards.length})</span>
         </h3>
       </div>
 
