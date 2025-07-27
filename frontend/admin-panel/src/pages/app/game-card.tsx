@@ -120,12 +120,12 @@ export const GameDeck = ({
   }
 
   return (
-    <div className={"flex flex-col bg-gray-200 rounded-md"}>
-      <h3 className="text-md font-semibold px-4 pt-2">
+    <div className={"flex bg-gray-200 rounded-md"}>
+      <h3 className="text-md font-semibold">
         {deck.name}
       </h3>
       <div className={`flex ${deckClassName.join(" ")}`}>
-      {deck.cards.map((cardId, index) => {
+      {deck.cards.map((cardId) => {
         const cardStyle: React.CSSProperties = {};
 
         const className: string[] = [

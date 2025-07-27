@@ -334,15 +334,13 @@ export const Game = () => {
                       </div>
                     </div>
                     
-                    <div className="pt-8">
-                      <GameDeck
-                        deck={world.decksById[deckId]}
-                        allDecks={Object.values(world.decksById)}
-                        cardsById={world.cardsById}
-                        flipCard={flipCard}
-                        moveCardToDeck={moveCardToDeck}
-                      />
-                    </div>
+                    <GameDeck
+                      deck={world.decksById[deckId]}
+                      allDecks={Object.values(world.decksById)}
+                      cardsById={world.cardsById}
+                      flipCard={flipCard}
+                      moveCardToDeck={moveCardToDeck}
+                    />
                   </div>
                 );
               })}
