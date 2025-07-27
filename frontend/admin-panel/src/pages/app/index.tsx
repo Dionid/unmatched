@@ -216,28 +216,10 @@ export const Game = () => {
         {Object.entries(world.playersById).map(([id, player]) => {
           return (
             <div key={id} className="flex gap-4 w-md">
-              {/* <h2 className="text-xl font-bold">{player.name}</h2> */}
-              {/* <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold">Cards</h3>
-                <div className="grid grid-cols-3 gap-2 w-120">
-                  {player.cards.map((cardId) => {
-                    return (
-                      <GameCard
-                        key={cardId}
-                        frontImageUri={world.cardsById[cardId].frontImageUri}
-                        backImageUri={world.cardsById[cardId].backImageUri}
-                        name={world.cardsById[cardId].name}
-                        isFaceUp={true}
-                        disableMenu={true}
-                      />
-                    );
-                  })}
-                </div>
-              </div> */}
               {player.resources.map((resourceId) => {
                 const resourceSettings = settings.resourceSettings[resourceId];
 
-                const className: string[] = ["fixed bg-gray-200 rounded-md"];
+                const className: string[] = ["fixed bg-gray-300 rounded-md"];
                 const style: React.CSSProperties = {};
 
                 style.left = resourceSettings.positionX;
