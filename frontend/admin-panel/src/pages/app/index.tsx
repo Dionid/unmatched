@@ -1,5 +1,5 @@
 import { DeckId, ResourceId, World } from "@/pages/app/game";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { GameDeck } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
 
@@ -47,6 +47,11 @@ export const Game = () => {
     },
   });
 
+  // Drag state management
+  const [isDragging, setIsDragging] = useState<string | null>(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     setWorld(firstWorld);
   }, []);
@@ -78,6 +83,58 @@ export const Game = () => {
       },
     }));
   };
+
+  // Function to update resource position
+  const updateResourcePosition = (resourceId: string, x: number, y: number) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      resourceSettings: {
+        ...prevSettings.resourceSettings,
+        [resourceId]: {
+          ...prevSettings.resourceSettings[resourceId],
+          positionX: `${x}px`,
+          positionY: `${y}px`,
+        },
+      },
+    }));
+  };
+
+  // Drag handlers
+  const handleMouseDown = (e: React.MouseEvent, resourceId: string) => {
+    e.preventDefault();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    setDragOffset({ x: offsetX, y: offsetY });
+    setIsDragging(resourceId);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging) return;
+    
+    const newX = e.clientX - dragOffset.x;
+    const newY = e.clientY - dragOffset.y;
+    
+    updateResourcePosition(isDragging, newX, newY);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(null);
+  };
+
+  // Add global mouse event listeners
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragOffset]);
 
   const flipCard = (cardId: string) => {
     setWorld((prevWorld) => ({
@@ -158,7 +215,7 @@ export const Game = () => {
               {player.resources.map((resourceId) => {
                 const resourceSettings = settings.resourceSettings[resourceId];
 
-                const className: string[] = ["fixed bg-gray-200 rounded-md cursor-move"];
+                const className: string[] = ["fixed bg-gray-200 rounded-md"];
                 const style: React.CSSProperties = {};
 
                 style.left = resourceSettings.positionX;
@@ -169,7 +226,25 @@ export const Game = () => {
                     key={resourceId}
                     className={className.join(" ")}
                     style={style}
+                    ref={dragRef}
                   >
+                    {/* Drag handle with dots icon */}
+                    <div 
+                      className="absolute top-0 left-0 w-6 h-6 bg-gray-300 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
+                      onMouseDown={(e) => handleMouseDown(e, resourceId)}
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex gap-0.5">
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                        </div>
+                        <div className="flex gap-0.5">
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div
                       key={resourceId}
                       className="flex flex-col text-center p-2 w-30"
