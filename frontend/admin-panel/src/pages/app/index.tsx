@@ -13,6 +13,34 @@ export const Game = () => {
     resourcesById: {},
   });
 
+  // Function to increment resource value
+  const incrementResource = (resourceId: string) => {
+    setWorld(prevWorld => ({
+      ...prevWorld,
+      resourcesById: {
+        ...prevWorld.resourcesById,
+        [resourceId]: {
+          ...prevWorld.resourcesById[resourceId],
+          value: prevWorld.resourcesById[resourceId].value + 1
+        }
+      }
+    }));
+  };
+
+  // Function to decrement resource value
+  const decrementResource = (resourceId: string) => {
+    setWorld(prevWorld => ({
+      ...prevWorld,
+      resourcesById: {
+        ...prevWorld.resourcesById,
+        [resourceId]: {
+          ...prevWorld.resourcesById[resourceId],
+          value: Math.max(0, prevWorld.resourcesById[resourceId].value - 1)
+        }
+      }
+    }));
+  };
+
   useEffect(() => {
     setWorld({
       t: "world",
@@ -25,17 +53,6 @@ export const Game = () => {
           name: "Jekyll & Hyde",
           description: "Jekyll & Hyde is a hero that can transform into a monster.",
           imageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/minis/NpoqqaDotShInZPyA0iGz.png"
-        }
-      },
-      playersById: {
-        "1": {
-          t: "player",
-          id: "1",
-          name: "Player 1",
-          decks: ["1"],
-          characters: ["1"],
-          cards: ["1"],
-          resources: ["1"],
         }
       },
       cardsById: {
@@ -61,6 +78,17 @@ export const Game = () => {
           description: "Health is a resource that can be used to heal characters.",
           imageUri: "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/avatars/3G9V5x3JHXMZ4G5H3Kk7s.webp",
           value: 10,
+        }
+      },
+      playersById: {
+        "1": {
+          t: "player",
+          id: "1",
+          name: "Player 1",
+          decks: ["1"],
+          characters: ["1"],
+          cards: ["1"],
+          resources: ["1"],
         }
       },
     });
@@ -111,7 +139,21 @@ export const Game = () => {
                       player.resources.map((resourceId) => {
                         return (
                           <div key={resourceId} className="flex flex-col text-center p-2 w-35">
-                            <p className="text-md font-bold">{world.resourcesById[resourceId].value}</p>
+                            <div className="flex items-center justify-center gap-2 mb-2">
+                              <button 
+                                onClick={() => decrementResource(resourceId)}
+                                className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                              >
+                                -
+                              </button>
+                              <p className="text-md font-bold min-w-[2rem]">{world.resourcesById[resourceId].value}</p>
+                              <button 
+                                onClick={() => incrementResource(resourceId)}
+                                className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                              >
+                                +
+                              </button>
+                            </div>
                             <img className="" src={world.resourcesById[resourceId].imageUri} />
                             <h3 className="text-md font-bold">{world.resourcesById[resourceId].name}</h3>
                           </div>
