@@ -131,7 +131,7 @@ export const GameDeckInternal = ({
     const cardStyle: React.CSSProperties = {};
 
     const className: string[] = [
-      "w-30 hover:-translate-y-10 transition-transform hover:scale-150",
+      "w-30 hover:-translate-y-7 transition-transform",
     ];
 
     return (
