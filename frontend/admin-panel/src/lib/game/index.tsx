@@ -37,6 +37,7 @@ export type Deck = {
     id: DeckId;
     name: string;
     cards: CardId[];
+    grouped: boolean;
 }
 
 export type Player = {

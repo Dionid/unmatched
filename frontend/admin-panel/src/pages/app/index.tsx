@@ -1,6 +1,6 @@
 import { World } from "@/lib/game";
 import { useEffect, useState } from "react";
-import { GameCard } from "./game-card";
+import { Deck, GameCard } from "./game-card";
 
 const defaultWorld: World = {
   t: "world",
@@ -68,24 +68,28 @@ export const Game = () => {
           id: "1",
           name: "hand",
           cards: ["1", "2"],
+          grouped: false,
         },
         "2": {
           t: "deck",
           id: "2",
           name: "draw",
           cards: ["3"],
+          grouped: true,
         },
         "3": {
           t: "deck",
           id: "3",
           name: "discard",
           cards: ["4"],
+          grouped: true,
         },
         "4": {
           t: "deck",
           id: "4",
           name: "play",
           cards: [],
+          grouped: false,
         },
       },
       resourcesById: {
@@ -250,31 +254,7 @@ export const Game = () => {
                         <h3 className="text-md font-bold">
                           {world.decksById[deckId].name}
                         </h3>
-                        <div className="grid grid-cols-3 gap-2 w-120">
-                          {world.decksById[deckId].cards.map((cardId) => {
-                            return (
-                              <GameCard
-                                key={cardId}
-                                frontImageUri={
-                                  world.cardsById[cardId].frontImageUri
-                                }
-                                backImageUri={
-                                  world.cardsById[cardId].backImageUri
-                                }
-                                name={world.cardsById[cardId].name}
-                                isFaceUp={world.cardsById[cardId].isFaceUp}
-                                onClick={() => flipCard(cardId)}
-                                onFlip={() => flipCard(cardId)}
-                                onMoveToDeck={(targetDeckId) => moveCardToDeck(cardId, deckId, targetDeckId)}
-                                availableDecks={Object.entries(world.decksById).map(([id, deck]) => ({
-                                  id,
-                                  name: deck.name
-                                }))}
-                                currentDeckId={deckId}
-                              />
-                            );
-                          })}
-                        </div>
+                        <Deck deckId={deckId} world={world} flipCard={flipCard} moveCardToDeck={moveCardToDeck} />
                       </div>
                     );
                   })}
