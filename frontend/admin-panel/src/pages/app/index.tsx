@@ -55,6 +55,40 @@ export const Game = () => {
     }));
   };
 
+  const moveCardToDeck = (cardId: string, targetDeckId: string) => {
+    setWorld((prevWorld) => {
+      // Find which deck currently contains this card
+      let sourceDeckId: string | null = null;
+      for (const [deckId, deck] of Object.entries(prevWorld.decksById)) {
+        if (deck.cards.includes(cardId)) {
+          sourceDeckId = deckId;
+          break;
+        }
+      }
+
+      if (!sourceDeckId) return prevWorld;
+
+      // Remove card from source deck
+      const updatedDecks = {
+        ...prevWorld.decksById,
+        [sourceDeckId]: {
+          ...prevWorld.decksById[sourceDeckId],
+          cards: prevWorld.decksById[sourceDeckId].cards.filter(id => id !== cardId)
+        },
+        // Add card to target deck
+        [targetDeckId]: {
+          ...prevWorld.decksById[targetDeckId],
+          cards: [...prevWorld.decksById[targetDeckId].cards, cardId]
+        }
+      };
+
+      return {
+        ...prevWorld,
+        decksById: updatedDecks
+      };
+    });
+  };
+
   useEffect(() => {
     setWorld({
       t: "world",
@@ -172,6 +206,7 @@ export const Game = () => {
                   {player.characters.map((characterId) => {
                     return (
                       <GameCard
+                        key={characterId}
                         frontImageUri={
                           world.charactersById[characterId].imageUri
                         }
@@ -180,6 +215,9 @@ export const Game = () => {
                         }
                         name={world.charactersById[characterId].name}
                         isFaceUp={true}
+                        onFlip={() => {}} // Characters can't be flipped
+                        onMoveToDeck={() => {}} // Characters can't be moved to decks
+                        availableDecks={[]}
                       />
                     );
                   })}
@@ -191,10 +229,17 @@ export const Game = () => {
                   {player.cards.map((cardId) => {
                     return (
                       <GameCard
+                        key={cardId}
                         frontImageUri={world.cardsById[cardId].frontImageUri}
                         backImageUri={world.cardsById[cardId].backImageUri}
                         name={world.cardsById[cardId].name}
                         isFaceUp={true}
+                        onFlip={() => flipCard(cardId)}
+                        onMoveToDeck={(deckId) => moveCardToDeck(cardId, deckId)}
+                        availableDecks={Object.entries(world.decksById).map(([id, deck]) => ({
+                          id,
+                          name: deck.name
+                        }))}
                       />
                     );
                   })}
@@ -261,6 +306,12 @@ export const Game = () => {
                                 name={world.cardsById[cardId].name}
                                 isFaceUp={world.cardsById[cardId].isFaceUp}
                                 onClick={() => flipCard(cardId)}
+                                onFlip={() => flipCard(cardId)}
+                                onMoveToDeck={(targetDeckId) => moveCardToDeck(cardId, targetDeckId)}
+                                availableDecks={Object.entries(world.decksById).map(([id, deck]) => ({
+                                  id,
+                                  name: deck.name
+                                }))}
                               />
                             );
                           })}
