@@ -109,18 +109,22 @@ export const GameDeck = ({
     targetDeckId: string
   ) => void;
 }) => {
-  const deckClassName: string[] = ["flex"]
+  const deckClassName: string[] = []
   
   if (deck.grouped) {
     deckClassName.push("relative")
   }
 
   if (deck.cards.length == 0) {
-    deckClassName.push("bg-gray-300 w-24 h-30")
+    deckClassName.push("w-24 h-30")
   }
 
   return (
-    <div className={deckClassName.join(" ")}>
+    <div className={"flex flex-col bg-gray-200 rounded-md"}>
+      <h3 className="text-md font-semibold px-4 pt-2">
+        {deck.name}
+      </h3>
+      <div className={`flex ${deckClassName.join(" ")}`}>
       {deck.cards.map((cardId, index) => {
         const cardStyle: React.CSSProperties = {};
 
@@ -146,6 +150,7 @@ export const GameDeck = ({
           />
         );
       })}
+      </div>
     </div>
   );
 };

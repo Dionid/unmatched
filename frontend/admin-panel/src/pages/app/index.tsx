@@ -157,76 +157,74 @@ export const Game = () => {
                   })}
                 </div>
               </div> */}
-              <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2">
-                  {player.resources.map((resourceId) => {
-                    const resourceSettings =
-                      settings.resourceSettings[resourceId];
+              {player.resources.map((resourceId) => {
+                const resourceSettings = settings.resourceSettings[resourceId];
 
-                    const className: string[] = ["fixed"];
-                    const style: React.CSSProperties = {};
+                const className: string[] = ["fixed bg-gray-200 rounded-md"];
+                const style: React.CSSProperties = {};
 
-                    switch (resourceSettings.positionY) {
-                      case "top":
-                        className.push("top-0");
-                        break;
-                      case "bottom":
-                        className.push("bottom-0");
-                        break;
-                      case "center":
-                        className.push("top-1/2 -translate-y-1/2");
-                        break;
-                    }
+                switch (resourceSettings.positionY) {
+                  case "top":
+                    className.push("top-0");
+                    break;
+                  case "bottom":
+                    className.push("bottom-0");
+                    break;
+                  case "center":
+                    className.push("top-1/2 -translate-y-1/2");
+                    break;
+                }
 
-                    switch (resourceSettings.positionX) {
-                      case "left":
-                        className.push("left-0");
-                        break;
-                      case "right":
-                        className.push("right-0");
-                        break;
-                      case "center":
-                        className.push("left-1/2 -translate-x-1/2");
-                        break;
-                    }
+                switch (resourceSettings.positionX) {
+                  case "left":
+                    className.push("left-0");
+                    break;
+                  case "right":
+                    className.push("right-0");
+                    break;
+                  case "center":
+                    className.push("left-1/2 -translate-x-1/2");
+                    break;
+                }
 
-                    return (
-                      <div
-                        key={resourceId}
-                        className={className.join(" ")}
-                        style={style}
-                      >
-                        <div
-                          key={resourceId}
-                          className="flex flex-col text-center p-2 w-30"
+                return (
+                  <div
+                    key={resourceId}
+                    className={className.join(" ")}
+                    style={style}
+                  >
+                    <div
+                      key={resourceId}
+                      className="flex flex-col text-center p-2 w-30"
+                    >
+                      <h3 className="text-md font-semibold">
+                        {world.resourcesById[resourceId].name}
+                      </h3>
+                      <img
+                        className="rounded-[50%] mt-2"
+                        src={world.resourcesById[resourceId].imageUri}
+                      />
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <button
+                          onClick={() => decrementResource(resourceId)}
+                          className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
                         >
-                          <div className="flex items-center justify-center gap-2 mb-2">
-                            <button
-                              onClick={() => decrementResource(resourceId)}
-                              className="bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                            >
-                              -
-                            </button>
-                            <p className="text-md font-bold min-w-[2rem]">
-                              {world.resourcesById[resourceId].value}
-                            </p>
-                            <button
-                              onClick={() => incrementResource(resourceId)}
-                              className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
-                            >
-                              +
-                            </button>
-                          </div>
-                          <img
-                            className=""
-                            src={world.resourcesById[resourceId].imageUri}
-                          />
-                        </div>
+                          -
+                        </button>
+                        <p className="text-md font-bold min-w-[2rem]">
+                          {world.resourcesById[resourceId].value}
+                        </p>
+                        <button
+                          onClick={() => incrementResource(resourceId)}
+                          className="bg-green-500 hover:bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold"
+                        >
+                          +
+                        </button>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
+                    </div>
+                  </div>
+                );
+              })}
               {player.decks.map((deckId) => {
                 const deckSettings = settings.deckSettings[deckId];
 
@@ -268,9 +266,6 @@ export const Game = () => {
                     className={className.join(" ")}
                     style={style}
                   >
-                    <h3 className="text-lg font-bold text-center">
-                      {world.decksById[deckId].name}
-                    </h3>
                     <GameDeck
                       deck={world.decksById[deckId]}
                       allDecks={Object.values(world.decksById)}

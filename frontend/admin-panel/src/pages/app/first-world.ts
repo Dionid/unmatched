@@ -83,7 +83,7 @@ export const firstWorld: World = {
     "1": {
       t: "resource",
       id: "1",
-      name: "Health",
+      name: "health",
       description: "Health is a resource that can be used to heal characters.",
       imageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/avatars/3G9V5x3JHXMZ4G5H3Kk7s.webp",
