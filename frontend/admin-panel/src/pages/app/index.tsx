@@ -31,7 +31,7 @@ export const Game = () => {
         positionY: `${window.innerHeight - 200}px`,
       },
       "2": {
-        positionX: `${window.innerWidth - 150}px`,
+        positionX: `${window.innerWidth - 190}px`,
         positionY: `${window.innerHeight - 200}px`,
       },
       "3": {
@@ -42,7 +42,7 @@ export const Game = () => {
     resourceSettings: {
       "1": {
         positionX: `${20}px`,
-        positionY: `${50}px`,
+        positionY: `${20}px`,
       },
     },
   });

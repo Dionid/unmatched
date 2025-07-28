@@ -1,5 +1,22 @@
 # Game
 
+# TODO
+
+1. Playzone
+1. Multiplayer
+1. Undo / Redo
+1. Hand settings
+    1. Formation
+        1. Grid
+        1. Horizontal
+            1. Deck width
+        1. Vertical
+            1. Deck height
+    1. Card width
+    1. Card scale
+1. Move "draw" and "discard" names to the top
+1. Dark theme
+
 ## Card
 
 1. Flip
