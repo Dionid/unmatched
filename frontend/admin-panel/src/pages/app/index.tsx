@@ -50,7 +50,7 @@ export const Game = () => {
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const [dragType, setDragType] = useState<'resource' | 'deck' | null>(null);
+  const [dragType, setDragType] = useState<'resource' | 'deck' | 'playzone' | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<HTMLDivElement>(null);
 
@@ -116,8 +116,27 @@ export const Game = () => {
     }));
   };
 
+  // Function to update playzone position
+  const updatePlayzonePosition = (playzoneId: string, x: number, y: number) => {
+    setWorld((prevWorld) => {
+      const playzone = prevWorld.playzonesById[playzoneId];
+      if (!playzone) return prevWorld;
+
+      return {
+        ...prevWorld,
+        playzonesById: {
+          ...prevWorld.playzonesById,
+          [playzoneId]: {
+            ...playzone,
+            position: { x, y, z: playzone.position.z },
+          },
+        },
+      }
+    });
+  };
+
   // Drag handlers
-  const handleMouseDown = (e: React.MouseEvent, id: string, type: 'resource' | 'deck') => {
+  const handleMouseDown = (e: React.MouseEvent, id: string, type: 'resource' | 'deck' | 'playzone') => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
@@ -138,6 +157,8 @@ export const Game = () => {
       updateResourcePosition(isDragging, newX, newY);
     } else if (dragType === 'deck') {
       updateDeckPosition(isDragging, newX, newY);
+    } else if (dragType === 'playzone') {
+      updatePlayzonePosition(isDragging, newX, newY);
     }
   };
 
@@ -291,7 +312,6 @@ export const Game = () => {
                     style={style}
                     ref={dragRef}
                   >
-                    {/* Drag handle with dots icon */}
                     <div 
                       className="absolute top-0 left-0 w-6 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
                       onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
@@ -383,6 +403,7 @@ export const Game = () => {
               key={id}
               world={world}
               playzone={playzone}
+              onMouseDown={(e) => handleMouseDown(e, id, 'playzone')}
               style={{
                 left: `${playzone.position.x}px`,
                 top: `${playzone.position.y}px`,

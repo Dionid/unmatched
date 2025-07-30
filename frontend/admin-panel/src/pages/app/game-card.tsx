@@ -276,10 +276,12 @@ export const GamePlayzone = ({
   // world,
   playzone,
   style,
+  onMouseDown,
 }: {
   world: World;
   playzone: Playzone;
   style: React.CSSProperties;
+  onMouseDown: (e: React.MouseEvent) => void;
 }) => {
   return (
     <div
@@ -293,7 +295,7 @@ export const GamePlayzone = ({
     >
       <DragHandle
         className="absolute top-0 left-0 transition-colors"
-        onMouseDown={(e) => e.preventDefault()}
+        onMouseDown={onMouseDown}
       />
 
       <div className="w-full h-full p-4">
