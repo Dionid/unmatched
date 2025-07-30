@@ -5,8 +5,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardId, Deck, Playzone, Resource, World } from "@/pages/app/game";
-import { DragHandle, DragIcon } from "./additional";
+import { Card, CardId, Deck, Map, Resource } from "@/pages/app/game";
+import { DragIcon } from "./additional";
 
 export const GameCard = ({
   frontImageUri,
@@ -337,61 +337,25 @@ export const GameResource = ({
   )
 }
 
-export const GamePlayzone = ({
-  world,
-  playzone,
+export const GameMap = ({
+  map,
+  className,
   style,
-  onMouseDown,
 }: {
-  world: World;
-  playzone: Playzone;
-  style: React.CSSProperties;
-  onMouseDown: (e: React.MouseEvent) => void;
+  map: Map;
+  className?: string;
+  style?: React.CSSProperties;
 }) => {
-  let inner = (
-    <div className="w-full h-full p-6">
-      <div className="w-full h-full rounded-md flex items-center justify-center bg-gray-400">
-        <p className="text-sm text-gray-500">Empty</p>
-      </div>
-    </div>
-  )
-
-  if (playzone.items.length > 0) {
-    inner = (
-      <div className="w-full h-full p-4 pt-6">
-        {
-          playzone.items.map((item) => {
-            // if (item.type === "card") {
-              // return <GameCard key={item.id}  />
-            // }
-            // if (item.type === "resource") {
-            //   return <GameResource key={itemId} resource={item} />
-            // }
-            if (item.type === "map") {
-              const map = world.mapsById[item.entityId];
-              return <img key={item.id} src={map.imageUri} alt={map.name} className="w-full h-full" />
-            }
-          })
-        }
-      </div>
-    )
-  }
-
   return (
     <div
-      style={{
-        ...style,
-        width: playzone.size.width,
-        height: playzone.size.height,
-        position: "absolute",
-      }}
-      className="rounded-md flex items-center justify-center border border-gray-500 border-dashed"
+      className={`w-full h-full ${className}`}
+      style={style}
     >
-      <DragHandle
-        className="absolute top-0 left-0 transition-colors"
-        onMouseDown={onMouseDown}
+      <img
+        className="w-full h-full shadow-sm bg-gray-700 rounded-md"
+        src={map.imageUri}
+        alt={map.name}
       />
-      { inner }
     </div>
   );
 };

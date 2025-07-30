@@ -1,6 +1,6 @@
 import { DeckId, ResourceId, World } from "@/pages/app/game";
 import { useEffect, useState, useRef } from "react";
-import { GameDeck, GamePlayzone, GameResource } from "./game-card";
+import { GameDeck, GameMap, GameResource } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
 import { DragHandle } from "./additional";
 
@@ -28,7 +28,7 @@ export const Game = () => {
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const [dragType, setDragType] = useState<'resource' | 'deck' | 'playzone' | null>(null);
+  const [dragType, setDragType] = useState<'resource' | 'deck' | 'map' | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<HTMLDivElement>(null);
 
@@ -57,10 +57,10 @@ export const Game = () => {
           position: { x: 20, y: window.innerHeight - 200, z: 0 },
         },
       },
-      playzonesById: {
-        ...firstWorld.playzonesById,
+      mapsById: {
+        ...firstWorld.mapsById,
         "1": {
-          ...firstWorld.playzonesById["1"],
+          ...firstWorld.mapsById["1"],
           position: { x: window.innerWidth / 2 - 100, y: 50, z: 0 },
         },
       },
@@ -116,6 +116,25 @@ export const Game = () => {
     });
   };
 
+  // Function to update map position
+  const updateMapPosition = (mapId: string, x: number, y: number) => {
+    setWorld((prevWorld) => {
+      const map = prevWorld.mapsById[mapId];
+      if (!map) return prevWorld;
+
+      return {
+        ...prevWorld,
+        mapsById: {
+          ...prevWorld.mapsById,
+          [mapId]: {
+            ...map,
+            position: { x, y, z: map.position.z },
+          },
+        },
+      }
+    });
+  };
+
   // Function to update deck position
   const updateDeckPosition = (deckId: string, x: number, y: number) => {
     setWorld((prevWorld) => {
@@ -135,27 +154,8 @@ export const Game = () => {
     });
   };
 
-  // Function to update playzone position
-  const updatePlayzonePosition = (playzoneId: string, x: number, y: number) => {
-    setWorld((prevWorld) => {
-      const playzone = prevWorld.playzonesById[playzoneId];
-      if (!playzone) return prevWorld;
-
-      return {
-        ...prevWorld,
-        playzonesById: {
-          ...prevWorld.playzonesById,
-          [playzoneId]: {
-            ...playzone,
-            position: { x, y, z: playzone.position.z },
-          },
-        },
-      }
-    });
-  };
-
   // Drag handlers
-  const handleMouseDown = (e: React.MouseEvent, id: string, type: 'resource' | 'deck' | 'playzone') => {
+  const handleMouseDown = (e: React.MouseEvent, id: string, type: 'resource' | 'deck' | 'map') => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
@@ -176,8 +176,8 @@ export const Game = () => {
       updateResourcePosition(isDragging, newX, newY);
     } else if (dragType === 'deck') {
       updateDeckPosition(isDragging, newX, newY);
-    } else if (dragType === 'playzone') {
-      updatePlayzonePosition(isDragging, newX, newY);
+    } else if (dragType === 'map') {
+      updateMapPosition(isDragging, newX, newY);
     }
   };
 
@@ -339,7 +339,7 @@ export const Game = () => {
               {player.decks.map((deckId) => {
                 const deck = world.decksById[deckId];
 
-                const className: string[] = ["absolute bg-gray-100 rounded-md shadow-md"];
+                const className: string[] = ["absolute bg-gray-300 rounded-md shadow-md"];
                 const style: React.CSSProperties = {};
 
                 style.left = `${deck.position.x}px`;
@@ -374,23 +374,31 @@ export const Game = () => {
           );
         })}
       </div>
-      {
-        Object.entries(world.playzonesById).map(([id, playzone]) => {
-          return (
-            <GamePlayzone
-              key={id}
-              world={world}
-              playzone={playzone}
-              onMouseDown={(e) => handleMouseDown(e, id, 'playzone')}
-              style={{
-                left: `${playzone.position.x}px`,
-                top: `${playzone.position.y}px`,
-                zIndex: playzone.position.z,
-              }}
+      {Object.entries(world.mapsById).map(([id, map]) => {
+        const style: React.CSSProperties = {};
+
+        style.left = `${map.position.x}px`;
+        style.top = `${map.position.y}px`;
+
+        style.width = map.size.width;
+        style.height = map.size.height;
+
+        return <div
+          key={id}
+          className={"absolute bg-gray-300 rounded-md shadow-md"}
+          style={style}
+          ref={dragRef}
+        >
+          <div className="absolute top-0 left-0">
+            <DragHandle
+              onMouseDown={(e) => handleMouseDown(e, id, 'map')}
             />
-          );
-        })
-      }
+          </div>
+          <div className="w-full h-full p-1 pl-6 shadow-sm">
+            <GameMap key={id} map={map} />
+          </div>
+        </div>;
+      })}
     </div>
   );
 };

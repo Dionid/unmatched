@@ -73,23 +73,7 @@ export type Map = {
     name: string;
     imageUri: string;
     position: Position;
-}
-
-export type PlayzoneItem = {
-    t: 'playzoneItem';
-    id: PlayzoneItemId;
-    type: "card" | "resource" | "map";
-    entityId: CardId | ResourceId | MapId;
-    playzoneId: PlayzoneId;
-    position: Position;
-}
-
-export type Playzone = {
-    t: 'playzone';
-    id: PlayzoneId;
-    items: PlayzoneItem[];
     size: Size;
-    position: Position;
 }
 
 // # Current game world with all data
@@ -103,6 +87,5 @@ export type World = {
     cardsById: Record<CardId, Card>;
     decksById: Record<DeckId, Deck>;
     resourcesById: Record<ResourceId, Resource>;
-    playzonesById: Record<PlayzoneId, Playzone>;
     mapsById: Record<MapId, Map>;
 }
