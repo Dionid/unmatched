@@ -247,7 +247,16 @@ export const Game = () => {
       if (targetDeck.type === "play") {
         const card = prevWorld.cardsById[cardId];
         if (card.isFaceUp) {
-          flipCard(cardId);
+          prevWorld = {
+            ...prevWorld,
+            cardsById: {
+              ...prevWorld.cardsById,
+              [cardId]: {
+                ...prevWorld.cardsById[cardId],
+                isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
+              },
+            },
+          }
         }
       }
 

@@ -198,8 +198,12 @@ export const GameDeckInternal = ({
       const cardStyle: React.CSSProperties = {};
   
       const className: string[] = [
-        "w-30 hover:-translate-y-20 transition-transform hover:scale-200",
+        "w-30 transition-transform hover:scale-105",
       ];
+
+      if (cardsById[cardId].isFaceUp) {
+        className.push("hover:-translate-y-20 hover:scale-200");
+      }
   
       return (
         <GameCard
