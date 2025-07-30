@@ -8,6 +8,7 @@ export const defaultWorld: World = {
   cardsById: {},
   decksById: {},
   resourcesById: {},
+  playzonesById: {},
 };
 
 export const firstWorld: World = {
@@ -98,6 +99,17 @@ export const firstWorld: World = {
       decks: ["1", "2", "3"],
       cards: ["1", "2", "3", "4"],
       resources: ["1"],
+    },
+  },
+  playzonesById: {
+    "1": {
+      t: "playzone",
+      id: "1",
+      items: [],
+      size: {
+        width: `300px`,
+        height: `200px`,
+      },
     },
   },
 };

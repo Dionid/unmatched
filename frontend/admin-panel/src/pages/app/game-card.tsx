@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardId, Deck } from "@/pages/app/game";
+import { Card, CardId, Deck, Playzone, World } from "@/pages/app/game";
 
 export const GameCard = ({
   frontImageUri,
@@ -276,3 +276,22 @@ export const GameDeck = ({
     </div>
   );
 };
+
+export const GamePlayzone = ({
+  // world,
+  playzone
+} : {
+  world: World,
+  playzone: Playzone
+}) => {
+  return (
+    <div style={{
+      width: playzone.size.width,
+      height: playzone.size.height,
+    }} className="bg-gray-400 rounded-md flex items-center justify-center">
+      <div className="w-full h-full bg-gray-400 rounded-md flex items-center justify-center">
+        <p className="text-sm text-gray-600">Empty</p>
+      </div>
+    </div>
+  );
+}

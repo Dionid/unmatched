@@ -4,8 +4,20 @@ export type ResourceId = string;
 export type PlayerId = string;
 export type WorldId = string;
 export type MapId = string;
-export type CharacterBundleId = string;
 export type ComponentId = string;
+export type PlayzoneId = string;
+export type PlayzoneItemId = string;
+
+export type Size = {
+    width: string;
+    height: string;
+}
+
+export type Position = {
+    x: number;
+    y: number;
+    z: number;
+}
 
 export type Card = {
     t: 'card';
@@ -52,6 +64,29 @@ export type Player = {
     resources: ResourceId[];
 }
 
+export type Map = {
+    t: 'map';
+    id: MapId;
+    name: string;
+    imageUri: string;
+}
+
+export type PlayzoneItem = {
+    t: 'playzoneItem';
+    id: PlayzoneItemId;
+    type: "card" | "resource" | "map";
+    playzoneId: PlayzoneId;
+    imageUri: string;
+    position: Position;
+}
+
+export type Playzone = {
+    t: 'playzone';
+    id: PlayzoneId;
+    items: PlayzoneItemId[];
+    size: Size;
+}
+
 // # Current game world with all data
 export type World = {
     t: 'world';
@@ -63,4 +98,5 @@ export type World = {
     cardsById: Record<CardId, Card>;
     decksById: Record<DeckId, Deck>;
     resourcesById: Record<ResourceId, Resource>;
+    playzonesById: Record<PlayzoneId, Playzone>;
 }

@@ -1,6 +1,6 @@
 import { DeckId, ResourceId, World } from "@/pages/app/game";
 import { useEffect, useState, useRef } from "react";
-import { GameDeck } from "./game-card";
+import { GameDeck, GamePlayzone } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
 
 export type Settings = {
@@ -395,6 +395,17 @@ export const Game = () => {
           );
         })}
       </div>
+      {
+        Object.entries(world.playzonesById).map(([id, playzone]) => {
+          return (
+            <GamePlayzone
+              key={id}
+              world={world}
+              playzone={playzone}
+            />
+          );
+        })
+      }
     </div>
   );
 };
