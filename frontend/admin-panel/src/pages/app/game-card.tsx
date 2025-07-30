@@ -87,7 +87,7 @@ export const GameCard = ({
               key={deck.id}
               onClick={() => handleMoveToDeck(deck.id)}
             >
-              Move to {deck.name}
+              {deck.name[0].toUpperCase() + deck.name.slice(1)}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>
@@ -142,7 +142,7 @@ export const GamePile = ({
               key={targetDeck.id}
               onClick={() => handleTakeTopCard(targetDeck.id)}
             >
-              Take top card to {targetDeck.name}
+              Top card to {targetDeck.name[0].toUpperCase() + targetDeck.name.slice(1)}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>
@@ -153,6 +153,7 @@ export const GamePile = ({
 export const GameDeckInternal = ({
   deck,
   cardsById,
+  flipCard,
   moveCardToDeck,
   allDecks,
   onTakeTopCard,
@@ -190,6 +191,36 @@ export const GameDeckInternal = ({
         onShuffle={() => onShuffle(deck.id)}
       />
     );
+  }
+
+  if (deck.type === "play") {
+    return deck.cards.map((cardId) => {
+      const cardStyle: React.CSSProperties = {};
+  
+      const className: string[] = [
+        "w-30 hover:-translate-y-20 transition-transform hover:scale-200",
+      ];
+  
+      return (
+        <GameCard
+          key={cardId}
+          className={className.join(" ")}
+          style={cardStyle}
+          frontImageUri={cardsById[cardId].frontImageUri}
+          backImageUri={cardsById[cardId].backImageUri}
+          name={cardsById[cardId].name}
+          isFaceUp={
+            cardsById[cardId].isFaceUp
+          }
+          onFlip={() => flipCard(cardId)}
+          onMoveToDeck={(targetDeckId) =>
+            moveCardToDeck(cardId, deck.id, targetDeckId)
+          }
+          availableDecks={allDecks}
+          currentDeckId={deck.id}
+        />
+      );
+    });
   }
 
   if (deck.type !== "hand") {

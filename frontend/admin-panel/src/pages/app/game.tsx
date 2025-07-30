@@ -52,7 +52,7 @@ export type Deck = {
     id: DeckId;
     name: string;
     cards: CardId[];
-    type: "hand" | "discard" | "draw";
+    type: "hand" | "discard" | "draw" | "play";
     position: Position;
 }
 

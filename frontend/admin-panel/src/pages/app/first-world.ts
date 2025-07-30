@@ -114,6 +114,18 @@ export const firstWorld: World = {
         z: 0,
       },
     },
+    "e4a3facf-ad44-4dc3-ae4e-003a590f9f93": {
+      t: "deck",
+      id: "e4a3facf-ad44-4dc3-ae4e-003a590f9f93",
+      name: "play",
+      cards: [],
+      type: "play",
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+    },
   },
   resourcesById: {
     "1": {
@@ -136,7 +148,7 @@ export const firstWorld: World = {
       t: "player",
       id: "1",
       name: "Player 1",
-      decks: ["1", "2", "3"],
+      decks: ["1", "2", "3", "e4a3facf-ad44-4dc3-ae4e-003a590f9f93"],
       cards: ["1", "2", "3", "4"],
       resources: ["1"],
     },
@@ -149,8 +161,8 @@ export const firstWorld: World = {
       imageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/maps/vfc99EARx4kiqr6f4aiIc.webp",
       size: {
-        width: `450px`,
-        height: `300px`,
+        width: `650px`,
+        height: `400px`,
       },
       position: {
         x: 0,

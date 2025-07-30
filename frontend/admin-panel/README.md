@@ -2,19 +2,24 @@
 
 # TODO
 
-1. Playzone
+1. Characters
 1. Multiplayer
 1. Undo / Redo
-1. Hand settings
-    1. Formation
-        1. Grid
-        1. Horizontal
-            1. Deck width
-        1. Vertical
-            1. Deck height
+1. z-index
+1. Settings
+    1. Hand settings
+        1. Formation
+            1. Grid
+            1. Horizontal
+                1. Deck width
+            1. Vertical
+                1. Deck height
+        1. Card scale
     1. Card width
-    1. Card scale
-1. Move "draw" and "discard" names to the top
+1. Resources
+    1. Min Max
+    1. Boolean type
+    1. String type
 1. Dark theme
 
 ## Card

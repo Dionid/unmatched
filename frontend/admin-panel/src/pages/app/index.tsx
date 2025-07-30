@@ -221,6 +221,8 @@ export const Game = () => {
       // Find which deck currently contains this card
       if (currentDeckId === targetDeckId) return prevWorld;
 
+      const targetDeck = prevWorld.decksById[targetDeckId];
+
       // Remove card from source deck
       const updatedDecks = {
         ...prevWorld.decksById,
@@ -241,6 +243,13 @@ export const Game = () => {
           ],
         },
       };
+
+      if (targetDeck.type === "play") {
+        const card = prevWorld.cardsById[cardId];
+        if (card.isFaceUp) {
+          flipCard(cardId);
+        }
+      }
 
       return {
         ...prevWorld,
