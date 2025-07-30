@@ -9,6 +9,7 @@ export const defaultWorld: World = {
   decksById: {},
   resourcesById: {},
   playzonesById: {},
+  mapsById: {},
 };
 
 export const firstWorld: World = {
@@ -145,11 +146,38 @@ export const firstWorld: World = {
     "1": {
       t: "playzone",
       id: "1",
-      items: [],
+      items: [
+        {
+          t: "playzoneItem",
+          id: "1",
+          type: "map",
+          entityId: "1",
+          playzoneId: "1",
+          position: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+        },
+      ],
       size: {
-        width: `300px`,
-        height: `200px`,
+        width: `450px`,
+        height: `300px`,
       },
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+    },
+  },
+  mapsById: {
+    "1": {
+      t: "map",
+      id: "1",
+      name: "Map 1",
+      imageUri:
+        "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/maps/vfc99EARx4kiqr6f4aiIc.webp",
       position: {
         x: 0,
         y: 0,

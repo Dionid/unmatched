@@ -1,8 +1,8 @@
 import { DeckId, ResourceId, World } from "@/pages/app/game";
 import { useEffect, useState, useRef } from "react";
-import { GameDeck, GamePlayzone } from "./game-card";
+import { GameDeck, GamePlayzone, GameResource } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
-import { DragHandle, DragIcon } from "./additional";
+import { DragHandle } from "./additional";
 
 export type Settings = {
   deckSettings: Record<
@@ -25,28 +25,6 @@ export type Settings = {
 
 export const Game = () => {
   const [world, setWorld] = useState<World>(defaultWorld);
-  // const [settings, setSettings] = useState<Settings>({
-  //   deckSettings: {
-  //     "1": {
-  //       positionX: `${window.innerWidth / 2 - 100}px`,
-  //       positionY: `${window.innerHeight - 200}px`,
-  //     },
-  //     "2": {
-  //       positionX: `${window.innerWidth - 190}px`,
-  //       positionY: `${window.innerHeight - 200}px`,
-  //     },
-  //     "3": {
-  //       positionX: `${20}px`,
-  //       positionY: `${window.innerHeight - 200}px`,
-  //     },
-  //   },
-  //   resourceSettings: {
-  //     "1": {
-  //       positionX: `${20}px`,
-  //       positionY: `${20}px`,
-  //     },
-  //   },
-  // });
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
@@ -340,61 +318,22 @@ export const Game = () => {
               {player.resources.map((resourceId) => {
                 const resource = world.resourcesById[resourceId];
 
-                const className: string[] = ["fixed bg-gray-300 rounded-md"];
+                const className: string[] = ["absolute bg-gray-300 rounded-md"];
                 const style: React.CSSProperties = {};
 
                 style.left = `${resource.position.x}px`;
                 style.top = `${resource.position.y}px`;
 
                 return (
-                  <div
-                    key={resourceId}
-                    className={className.join(" ")}
+                  <GameResource
+                    key={resource.id}
+                    resource={resource}
+                    onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
+                    decrementResource={decrementResource}
+                    incrementResource={incrementResource}
                     style={style}
-                    ref={dragRef}
-                  >
-                    <div 
-                      className="absolute top-0 left-0 w-6 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
-                      onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
-                    >
-                      <DragIcon/>
-                    </div>
-                    
-                    <div
-                      key={resourceId}
-                      className="flex flex-col w-30"
-                    >
-                      <div className="flex items-center justify-center bg-gray-100 rounded-t-md">
-                        <h3 className="text-md font-semibold">
-                          {world.resourcesById[resourceId].name}
-                        </h3>
-                      </div>
-
-                      <div className="p-4 pt-2">
-                        <img
-                          className="rounded-[50%] mt-2"
-                          src={world.resourcesById[resourceId].imageUri}
-                        />
-                        <div className="flex items-center justify-center gap-2 mt-2">
-                          <button
-                            onClick={() => decrementResource(resourceId)}
-                            className="bg-white rounded-md w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer"
-                          >
-                            -
-                          </button>
-                          <p className="text-md font-bold min-w-[1.5rem]">
-                            {world.resourcesById[resourceId].value}
-                          </p>
-                          <button
-                            onClick={() => incrementResource(resourceId)}
-                            className="bg-white rounded-md w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    className={className.join(" ")}
+                  />
                 );
               })}
               {player.decks.map((deckId) => {

@@ -79,15 +79,15 @@ export type PlayzoneItem = {
     t: 'playzoneItem';
     id: PlayzoneItemId;
     type: "card" | "resource" | "map";
+    entityId: CardId | ResourceId | MapId;
     playzoneId: PlayzoneId;
-    imageUri: string;
     position: Position;
 }
 
 export type Playzone = {
     t: 'playzone';
     id: PlayzoneId;
-    items: PlayzoneItemId[];
+    items: PlayzoneItem[];
     size: Size;
     position: Position;
 }
@@ -104,4 +104,5 @@ export type World = {
     decksById: Record<DeckId, Deck>;
     resourcesById: Record<ResourceId, Resource>;
     playzonesById: Record<PlayzoneId, Playzone>;
+    mapsById: Record<MapId, Map>;
 }

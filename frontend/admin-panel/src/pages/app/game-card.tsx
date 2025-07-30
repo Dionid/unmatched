@@ -5,8 +5,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardId, Deck, Playzone, World } from "@/pages/app/game";
-import { DragHandle } from "./additional";
+import { Card, CardId, Deck, Playzone, Resource, World } from "@/pages/app/game";
+import { DragHandle, DragIcon } from "./additional";
 
 export const GameCard = ({
   frontImageUri,
@@ -272,8 +272,73 @@ export const GameDeck = ({
   );
 };
 
+export const GameResource = ({
+  resource,
+  style,
+  onMouseDown,
+  className,
+  decrementResource,
+  incrementResource,
+}: {
+  resource: Resource;
+  style: React.CSSProperties;
+  onMouseDown: (e: React.MouseEvent, id: string, type: 'resource' | 'deck' | 'playzone') => void;
+  decrementResource: (resourceId: string) => void;
+  incrementResource: (resourceId: string) => void;
+  className?: string;
+}) => {
+  return (
+    <div
+      className={className}
+      style={style}
+    >
+      <div 
+        className="absolute top-0 left-0 w-6 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
+        onMouseDown={(e) => onMouseDown(e, resource.id, 'resource')}
+      >
+        <DragIcon/>
+      </div>
+      
+      <div
+        key={resource.id}
+        className="flex flex-col w-30"
+      >
+        <div className="flex items-center justify-center bg-gray-100 rounded-t-md">
+          <h3 className="text-md font-semibold">
+            {resource.name}
+          </h3>
+        </div>
+
+        <div className="p-4 pt-2">
+          <img
+            className="rounded-[50%] mt-2"
+            src={resource.imageUri}
+          />
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <button
+              onClick={() => decrementResource(resource.id)}
+              className="bg-white rounded-md w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer"
+            >
+              -
+            </button>
+            <p className="text-md font-bold min-w-[1.5rem]">
+              {resource.value}
+            </p>
+            <button
+              onClick={() => incrementResource(resource.id)}
+              className="bg-white rounded-md w-6 h-6 flex items-center justify-center text-lg font-bold cursor-pointer"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export const GamePlayzone = ({
-  // world,
+  world,
   playzone,
   style,
   onMouseDown,
@@ -283,6 +348,35 @@ export const GamePlayzone = ({
   style: React.CSSProperties;
   onMouseDown: (e: React.MouseEvent) => void;
 }) => {
+  let inner = (
+    <div className="w-full h-full p-6">
+      <div className="w-full h-full rounded-md flex items-center justify-center bg-gray-400">
+        <p className="text-sm text-gray-500">Empty</p>
+      </div>
+    </div>
+  )
+
+  if (playzone.items.length > 0) {
+    inner = (
+      <div className="w-full h-full p-4 pt-6">
+        {
+          playzone.items.map((item) => {
+            // if (item.type === "card") {
+              // return <GameCard key={item.id}  />
+            // }
+            // if (item.type === "resource") {
+            //   return <GameResource key={itemId} resource={item} />
+            // }
+            if (item.type === "map") {
+              const map = world.mapsById[item.entityId];
+              return <img key={item.id} src={map.imageUri} alt={map.name} className="w-full h-full" />
+            }
+          })
+        }
+      </div>
+    )
+  }
+
   return (
     <div
       style={{
@@ -297,12 +391,7 @@ export const GamePlayzone = ({
         className="absolute top-0 left-0 transition-colors"
         onMouseDown={onMouseDown}
       />
-
-      <div className="w-full h-full p-4">
-        <div className="w-full h-full rounded-md flex items-center justify-center bg-gray-400">
-          <p className="text-sm text-gray-500">Empty</p>
-        </div>
-      </div>
+      { inner }
     </div>
   );
 };
