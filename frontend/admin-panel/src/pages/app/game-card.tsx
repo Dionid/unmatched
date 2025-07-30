@@ -61,7 +61,7 @@ export const GameCard = ({
     >
       <DropdownMenuTrigger asChild>
         <div
-          className={`cursor-pointer ${className}`}
+          className={`cursor-pointer w-30 h-42 ${className}`}
           style={style}
           onContextMenu={(e) => {
             e.preventDefault();
@@ -69,7 +69,7 @@ export const GameCard = ({
           }}
         >
           <img
-            className="shadow-sm"
+            className="shadow-sm bg-gray-700 w-full h-full"
             src={isFaceUp ? frontImageUri : backImageUri}
             alt={alt ?? name}
           />
