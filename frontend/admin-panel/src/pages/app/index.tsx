@@ -2,6 +2,7 @@ import { DeckId, ResourceId, World } from "@/pages/app/game";
 import { useEffect, useState, useRef } from "react";
 import { GameDeck, GamePlayzone } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
+import { DragHandle, DragIcon } from "./additional";
 
 export type Settings = {
   deckSettings: Record<
@@ -295,16 +296,7 @@ export const Game = () => {
                       className="absolute top-0 left-0 w-6 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
                       onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
                     >
-                      <div className="flex flex-col gap-0.5">
-                        <div className="flex gap-0.5">
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                        </div>
-                        <div className="flex gap-0.5">
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                        </div>
-                      </div>
+                      <DragIcon/>
                     </div>
                     
                     <div
@@ -362,21 +354,10 @@ export const Game = () => {
                     style={style}
                     ref={dragRef}
                   >
-                    {/* Drag handle with dots icon */}
-                    <div 
-                      className="absolute top-0 left-0 w-8 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors"
-                      onMouseDown={(e) => handleMouseDown(e, deckId, 'deck')}
-                    >
-                      <div className="flex flex-col gap-0.5">
-                        <div className="flex gap-0.5">
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                        </div>
-                        <div className="flex gap-0.5">
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-                        </div>
-                      </div>
+                    <div className="absolute top-0 left-0">
+                      <DragHandle
+                        onMouseDown={(e) => handleMouseDown(e, deckId, 'deck')}
+                      />
                     </div>
                     
                     <GameDeck
@@ -402,6 +383,11 @@ export const Game = () => {
               key={id}
               world={world}
               playzone={playzone}
+              style={{
+                left: `${playzone.position.x}px`,
+                top: `${playzone.position.y}px`,
+                zIndex: playzone.position.z,
+              }}
             />
           );
         })

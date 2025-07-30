@@ -110,6 +110,11 @@ export const firstWorld: World = {
         width: `300px`,
         height: `200px`,
       },
+      position: {
+        x: 100,
+        y: 100,
+        z: 0,
+      },
     },
   },
 };

@@ -85,6 +85,7 @@ export type Playzone = {
     id: PlayzoneId;
     items: PlayzoneItemId[];
     size: Size;
+    position: Position;
 }
 
 // # Current game world with all data

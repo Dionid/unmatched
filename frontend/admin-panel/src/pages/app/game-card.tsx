@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardId, Deck, Playzone, World } from "@/pages/app/game";
+import { DragHandle } from "./additional";
 
 export const GameCard = ({
   frontImageUri,
@@ -76,11 +77,9 @@ export const GameCard = ({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        {
-          onFlip && (
-            <DropdownMenuItem onClick={handleFlip}>Flip</DropdownMenuItem>
-          )
-        }
+        {onFlip && (
+          <DropdownMenuItem onClick={handleFlip}>Flip</DropdownMenuItem>
+        )}
         {availableDecks
           .filter((deck) => deck.id !== currentDeckId)
           .map((deck) => (
@@ -122,12 +121,9 @@ export const GamePile = ({
   };
 
   return (
-    <DropdownMenu
-      open={isMenuOpen}
-      onOpenChange={setIsMenuOpen}
-    >
+    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <DropdownMenuTrigger asChild>
-        <div 
+        <div
           className="w-30 h-42 transition-transform hover:scale-103 cursor-pointer"
           onContextMenu={(e) => {
             e.preventDefault();
@@ -138,9 +134,7 @@ export const GamePile = ({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuItem onClick={handleShuffle}>
-          Shuffle
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleShuffle}>Shuffle</DropdownMenuItem>
         {allDecks
           .filter((targetDeck) => targetDeck.id !== deck.id)
           .map((targetDeck) => (
@@ -154,7 +148,7 @@ export const GamePile = ({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
 
 export const GameDeckInternal = ({
   deck,
@@ -188,9 +182,9 @@ export const GameDeckInternal = ({
 
   if (deck.type === "draw" || deck.type === "discard") {
     return (
-      <GamePile 
-        cardsById={cardsById} 
-        deck={deck} 
+      <GamePile
+        cardsById={cardsById}
+        deck={deck}
         allDecks={allDecks}
         onTakeTopCard={(targetDeckId) => onTakeTopCard(deck.id, targetDeckId)}
         onShuffle={() => onShuffle(deck.id)}
@@ -257,7 +251,8 @@ export const GameDeck = ({
       {/* Rotated deck name on the left */}
       <div className="flex items-center justify-center w-8 bg-gray-100 rounded-l-md">
         <h3 className="text-md font-semibold transform -rotate-90 whitespace-nowrap">
-          {deck.name} <span className="text-sm text-gray-600">({deck.cards.length})</span>
+          {deck.name}{" "}
+          <span className="text-sm text-gray-600">({deck.cards.length})</span>
         </h3>
       </div>
 
@@ -279,19 +274,33 @@ export const GameDeck = ({
 
 export const GamePlayzone = ({
   // world,
-  playzone
-} : {
-  world: World,
-  playzone: Playzone
+  playzone,
+  style,
+}: {
+  world: World;
+  playzone: Playzone;
+  style: React.CSSProperties;
 }) => {
   return (
-    <div style={{
-      width: playzone.size.width,
-      height: playzone.size.height,
-    }} className="bg-gray-400 rounded-md flex items-center justify-center">
-      <div className="w-full h-full bg-gray-400 rounded-md flex items-center justify-center">
-        <p className="text-sm text-gray-600">Empty</p>
+    <div
+      style={{
+        ...style,
+        width: playzone.size.width,
+        height: playzone.size.height,
+        position: "absolute",
+      }}
+      className="rounded-md flex items-center justify-center border border-gray-500 border-dashed"
+    >
+      <DragHandle
+        className="absolute top-0 left-0 transition-colors"
+        onMouseDown={(e) => e.preventDefault()}
+      />
+
+      <div className="w-full h-full p-4">
+        <div className="w-full h-full rounded-md flex items-center justify-center bg-gray-400">
+          <p className="text-sm text-gray-500">Empty</p>
+        </div>
       </div>
     </div>
   );
-}
+};
