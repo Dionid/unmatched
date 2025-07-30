@@ -28,7 +28,9 @@ export const Game = () => {
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const [dragType, setDragType] = useState<'resource' | 'deck' | 'map' | null>(null);
+  const [dragType, setDragType] = useState<"resource" | "deck" | "map" | null>(
+    null
+  );
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const dragRef = useRef<HTMLDivElement>(null);
 
@@ -46,11 +48,19 @@ export const Game = () => {
         ...firstWorld.decksById,
         "1": {
           ...firstWorld.decksById["1"],
-          position: { x: window.innerWidth / 2 - 100, y: window.innerHeight - 200, z: 0 },
+          position: {
+            x: window.innerWidth / 2 - 100,
+            y: window.innerHeight - 200,
+            z: 0,
+          },
         },
         "2": {
           ...firstWorld.decksById["2"],
-          position: { x: window.innerWidth - 190, y: window.innerHeight - 200, z: 0 },
+          position: {
+            x: window.innerWidth - 190,
+            y: window.innerHeight - 200,
+            z: 0,
+          },
         },
         "3": {
           ...firstWorld.decksById["3"],
@@ -112,7 +122,7 @@ export const Game = () => {
             position: { x, y, z: resource.position.z },
           },
         },
-      }
+      };
     });
   };
 
@@ -131,7 +141,7 @@ export const Game = () => {
             position: { x, y, z: map.position.z },
           },
         },
-      }
+      };
     });
   };
 
@@ -150,17 +160,21 @@ export const Game = () => {
             position: { x, y, z: deck.position.z },
           },
         },
-      }
+      };
     });
   };
 
   // Drag handlers
-  const handleMouseDown = (e: React.MouseEvent, id: string, type: 'resource' | 'deck' | 'map') => {
+  const handleMouseDown = (
+    e: React.MouseEvent,
+    id: string,
+    type: "resource" | "deck" | "map"
+  ) => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
-    
+
     setDragOffset({ x: offsetX, y: offsetY });
     setIsDragging(id);
     setDragType(type);
@@ -168,15 +182,15 @@ export const Game = () => {
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging || !dragType) return;
-    
+
     const newX = e.clientX - dragOffset.x;
     const newY = e.clientY - dragOffset.y;
-    
-    if (dragType === 'resource') {
+
+    if (dragType === "resource") {
       updateResourcePosition(isDragging, newX, newY);
-    } else if (dragType === 'deck') {
+    } else if (dragType === "deck") {
       updateDeckPosition(isDragging, newX, newY);
-    } else if (dragType === 'map') {
+    } else if (dragType === "map") {
       updateMapPosition(isDragging, newX, newY);
     }
   };
@@ -189,12 +203,12 @@ export const Game = () => {
   // Add global mouse event listeners
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
       };
     }
   }, [isDragging, dragOffset, dragType]);
@@ -256,7 +270,7 @@ export const Game = () => {
                 isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
               },
             },
-          }
+          };
         }
       }
 
@@ -285,10 +299,7 @@ export const Game = () => {
         // Add top card to target deck
         [targetDeckId]: {
           ...prevWorld.decksById[targetDeckId],
-          cards: [
-            ...prevWorld.decksById[targetDeckId].cards,
-            topCardId,
-          ],
+          cards: [...prevWorld.decksById[targetDeckId].cards, topCardId],
         },
       };
 
@@ -309,7 +320,10 @@ export const Game = () => {
       const shuffledCards = [...deck.cards];
       for (let i = shuffledCards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]];
+        [shuffledCards[i], shuffledCards[j]] = [
+          shuffledCards[j],
+          shuffledCards[i],
+        ];
       }
 
       return {
@@ -326,13 +340,38 @@ export const Game = () => {
   };
 
   return (
-    <div 
-      className="w-full h-full p-6 relative"
-    >
+    <div className="w-full h-full p-6 relative">
       <div className="flex flex-col gap-4">
         {Object.entries(world.playersById).map(([id, player]) => {
           return (
             <div key={id} className="flex gap-4 w-md">
+              {Object.entries(world.mapsById).map(([id, map]) => {
+                const style: React.CSSProperties = {};
+
+                style.left = `${map.position.x}px`;
+                style.top = `${map.position.y}px`;
+
+                style.width = map.size.width;
+                style.height = map.size.height;
+
+                return (
+                  <div
+                    key={id}
+                    className={"absolute bg-gray-300 rounded-md shadow-md"}
+                    style={style}
+                    ref={dragRef}
+                  >
+                    <div className="absolute top-0 left-0">
+                      <DragHandle
+                        onMouseDown={(e) => handleMouseDown(e, id, "map")}
+                      />
+                    </div>
+                    <div className="w-full h-full p-1 pl-6 shadow-sm">
+                      <GameMap key={id} map={map} />
+                    </div>
+                  </div>
+                );
+              })}
               {player.resources.map((resourceId) => {
                 const resource = world.resourcesById[resourceId];
 
@@ -346,7 +385,9 @@ export const Game = () => {
                   <GameResource
                     key={resource.id}
                     resource={resource}
-                    onMouseDown={(e) => handleMouseDown(e, resourceId, 'resource')}
+                    onMouseDown={(e) =>
+                      handleMouseDown(e, resourceId, "resource")
+                    }
                     decrementResource={decrementResource}
                     incrementResource={incrementResource}
                     style={style}
@@ -357,7 +398,9 @@ export const Game = () => {
               {player.decks.map((deckId) => {
                 const deck = world.decksById[deckId];
 
-                const className: string[] = ["absolute bg-gray-300 rounded-md shadow-md"];
+                const className: string[] = [
+                  "absolute bg-gray-300 rounded-md shadow-md",
+                ];
                 const style: React.CSSProperties = {};
 
                 style.left = `${deck.position.x}px`;
@@ -372,10 +415,10 @@ export const Game = () => {
                   >
                     <div className="absolute top-0 left-0">
                       <DragHandle
-                        onMouseDown={(e) => handleMouseDown(e, deckId, 'deck')}
+                        onMouseDown={(e) => handleMouseDown(e, deckId, "deck")}
                       />
                     </div>
-                    
+
                     <GameDeck
                       deck={world.decksById[deckId]}
                       allDecks={Object.values(world.decksById)}
@@ -392,31 +435,6 @@ export const Game = () => {
           );
         })}
       </div>
-      {Object.entries(world.mapsById).map(([id, map]) => {
-        const style: React.CSSProperties = {};
-
-        style.left = `${map.position.x}px`;
-        style.top = `${map.position.y}px`;
-
-        style.width = map.size.width;
-        style.height = map.size.height;
-
-        return <div
-          key={id}
-          className={"absolute bg-gray-300 rounded-md shadow-md"}
-          style={style}
-          ref={dragRef}
-        >
-          <div className="absolute top-0 left-0">
-            <DragHandle
-              onMouseDown={(e) => handleMouseDown(e, id, 'map')}
-            />
-          </div>
-          <div className="w-full h-full p-1 pl-6 shadow-sm">
-            <GameMap key={id} map={map} />
-          </div>
-        </div>;
-      })}
     </div>
   );
 };
