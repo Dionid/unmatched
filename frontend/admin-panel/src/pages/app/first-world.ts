@@ -25,6 +25,11 @@ export const firstWorld: World = {
       backImageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
       isFaceUp: true,
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
     "2": {
       t: "card",
@@ -35,6 +40,11 @@ export const firstWorld: World = {
       backImageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
       isFaceUp: true,
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
     "3": {
       t: "card",
@@ -45,6 +55,11 @@ export const firstWorld: World = {
       backImageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
       isFaceUp: true,
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
     "4": {
       t: "card",
@@ -55,6 +70,11 @@ export const firstWorld: World = {
       backImageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/card-covers/ALEF6sBXvEA3kUuJEb3gb.png",
       isFaceUp: false,
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
   },
   decksById: {
@@ -64,6 +84,11 @@ export const firstWorld: World = {
       name: "hand",
       cards: ["1", "2"],
       type: "hand",
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
     "2": {
       t: "deck",
@@ -71,6 +96,11 @@ export const firstWorld: World = {
       name: "draw",
       cards: ["3"],
       type: "draw",
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
     "3": {
       t: "deck",
@@ -78,6 +108,11 @@ export const firstWorld: World = {
       name: "discard",
       cards: ["4"],
       type: "discard",
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
   },
   resourcesById: {
@@ -89,6 +124,11 @@ export const firstWorld: World = {
       imageUri:
         "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/avatars/3G9V5x3JHXMZ4G5H3Kk7s.webp",
       value: 10,
+      position: {
+        x: 0,
+        y: 0,
+        z: 0,
+      },
     },
   },
   playersById: {
@@ -111,8 +151,8 @@ export const firstWorld: World = {
         height: `200px`,
       },
       position: {
-        x: 100,
-        y: 100,
+        x: 0,
+        y: 0,
         z: 0,
       },
     },

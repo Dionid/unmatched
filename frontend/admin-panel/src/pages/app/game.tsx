@@ -26,6 +26,7 @@ export type Card = {
     frontImageUri: string;
     backImageUri: string;
     isFaceUp: boolean;
+    position: Position;
 }
 
 export type Resource = {
@@ -35,6 +36,7 @@ export type Resource = {
     description: string;
     imageUri: string;
     value: number;
+    position: Position;
 }
 
 // export type CharacterBundle = {
@@ -51,6 +53,7 @@ export type Deck = {
     name: string;
     cards: CardId[];
     type: "hand" | "discard" | "draw";
+    position: Position;
 }
 
 export type Player = {
@@ -69,6 +72,7 @@ export type Map = {
     id: MapId;
     name: string;
     imageUri: string;
+    position: Position;
 }
 
 export type PlayzoneItem = {

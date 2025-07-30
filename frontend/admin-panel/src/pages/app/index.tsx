@@ -25,28 +25,28 @@ export type Settings = {
 
 export const Game = () => {
   const [world, setWorld] = useState<World>(defaultWorld);
-  const [settings, setSettings] = useState<Settings>({
-    deckSettings: {
-      "1": {
-        positionX: `${window.innerWidth / 2 - 100}px`,
-        positionY: `${window.innerHeight - 200}px`,
-      },
-      "2": {
-        positionX: `${window.innerWidth - 190}px`,
-        positionY: `${window.innerHeight - 200}px`,
-      },
-      "3": {
-        positionX: `${20}px`,
-        positionY: `${window.innerHeight - 200}px`,
-      },
-    },
-    resourceSettings: {
-      "1": {
-        positionX: `${20}px`,
-        positionY: `${20}px`,
-      },
-    },
-  });
+  // const [settings, setSettings] = useState<Settings>({
+  //   deckSettings: {
+  //     "1": {
+  //       positionX: `${window.innerWidth / 2 - 100}px`,
+  //       positionY: `${window.innerHeight - 200}px`,
+  //     },
+  //     "2": {
+  //       positionX: `${window.innerWidth - 190}px`,
+  //       positionY: `${window.innerHeight - 200}px`,
+  //     },
+  //     "3": {
+  //       positionX: `${20}px`,
+  //       positionY: `${window.innerHeight - 200}px`,
+  //     },
+  //   },
+  //   resourceSettings: {
+  //     "1": {
+  //       positionX: `${20}px`,
+  //       positionY: `${20}px`,
+  //     },
+  //   },
+  // });
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
@@ -55,7 +55,40 @@ export const Game = () => {
   const dragRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setWorld(firstWorld);
+    const changedWorld = {
+      ...firstWorld,
+      resourcesById: {
+        ...firstWorld.resourcesById,
+        "1": {
+          ...firstWorld.resourcesById["1"],
+          position: { x: 20, y: 20, z: 0 },
+        },
+      },
+      decksById: {
+        ...firstWorld.decksById,
+        "1": {
+          ...firstWorld.decksById["1"],
+          position: { x: window.innerWidth / 2 - 100, y: window.innerHeight - 200, z: 0 },
+        },
+        "2": {
+          ...firstWorld.decksById["2"],
+          position: { x: window.innerWidth - 190, y: window.innerHeight - 200, z: 0 },
+        },
+        "3": {
+          ...firstWorld.decksById["3"],
+          position: { x: 20, y: window.innerHeight - 200, z: 0 },
+        },
+      },
+      playzonesById: {
+        ...firstWorld.playzonesById,
+        "1": {
+          ...firstWorld.playzonesById["1"],
+          position: { x: window.innerWidth / 2 - 100, y: 50, z: 0 },
+        },
+      },
+    };
+
+    setWorld(changedWorld);
   }, []);
 
   // Function to increment resource value
@@ -88,32 +121,40 @@ export const Game = () => {
 
   // Function to update resource position
   const updateResourcePosition = (resourceId: string, x: number, y: number) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      resourceSettings: {
-        ...prevSettings.resourceSettings,
-        [resourceId]: {
-          ...prevSettings.resourceSettings[resourceId],
-          positionX: `${x}px`,
-          positionY: `${y}px`,
+    setWorld((prevWorld) => {
+      const resource = prevWorld.resourcesById[resourceId];
+      if (!resource) return prevWorld;
+
+      return {
+        ...prevWorld,
+        resourcesById: {
+          ...prevWorld.resourcesById,
+          [resourceId]: {
+            ...resource,
+            position: { x, y, z: resource.position.z },
+          },
         },
-      },
-    }));
+      }
+    });
   };
 
   // Function to update deck position
   const updateDeckPosition = (deckId: string, x: number, y: number) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      deckSettings: {
-        ...prevSettings.deckSettings,
-        [deckId]: {
-          ...prevSettings.deckSettings[deckId],
-          positionX: `${x}px`,
-          positionY: `${y}px`,
+    setWorld((prevWorld) => {
+      const deck = prevWorld.decksById[deckId];
+      if (!deck) return prevWorld;
+
+      return {
+        ...prevWorld,
+        decksById: {
+          ...prevWorld.decksById,
+          [deckId]: {
+            ...deck,
+            position: { x, y, z: deck.position.z },
+          },
         },
-      },
-    }));
+      }
+    });
   };
 
   // Function to update playzone position
@@ -297,13 +338,13 @@ export const Game = () => {
           return (
             <div key={id} className="flex gap-4 w-md">
               {player.resources.map((resourceId) => {
-                const resourceSettings = settings.resourceSettings[resourceId];
+                const resource = world.resourcesById[resourceId];
 
                 const className: string[] = ["fixed bg-gray-300 rounded-md"];
                 const style: React.CSSProperties = {};
 
-                style.left = resourceSettings.positionX;
-                style.top = resourceSettings.positionY;
+                style.left = `${resource.position.x}px`;
+                style.top = `${resource.position.y}px`;
 
                 return (
                   <div
@@ -357,15 +398,13 @@ export const Game = () => {
                 );
               })}
               {player.decks.map((deckId) => {
-                const deckSettings = settings.deckSettings[deckId];
+                const deck = world.decksById[deckId];
 
-                const className: string[] = ["fixed bg-gray-100 rounded-md shadow-md"];
+                const className: string[] = ["absolute bg-gray-100 rounded-md shadow-md"];
                 const style: React.CSSProperties = {};
 
-                if (deckSettings) {
-                  style.left = deckSettings.positionX;
-                  style.top = deckSettings.positionY;
-                }
+                style.left = `${deck.position.x}px`;
+                style.top = `${deck.position.y}px`;
 
                 return (
                   <div
