@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardId, Deck, Map, Resource } from "@/pages/app/game";
+import { Card, CardId, Character, Deck, Map, Resource } from "@/pages/app/game";
 import { DragIcon } from "./additional";
 
 export const GameCard = ({
@@ -394,3 +394,26 @@ export const GameMap = ({
     </div>
   );
 };
+
+export const GameCharacter = ({
+  character,
+  className,
+  style,
+}: {
+  character: Character;
+  className?: string;
+  style?: React.CSSProperties;
+}) => {
+  return (
+    <div
+      className={className}
+      style={style}
+    >
+      <img
+        className="w-full h-full"
+        src={character.imageUri}
+        alt={character.name}
+      />
+    </div>
+  )
+}

@@ -9,6 +9,7 @@ export const defaultWorld: World = {
   decksById: {},
   resourcesById: {},
   mapsById: {},
+  charactersById: {},
 };
 
 export const firstWorld: World = {
@@ -151,6 +152,7 @@ export const firstWorld: World = {
       decks: ["1", "2", "3", "e4a3facf-ad44-4dc3-ae4e-003a590f9f93"],
       cards: ["1", "2", "3", "4"],
       resources: ["1"],
+      characters: ["1"],
     },
   },
   mapsById: {
@@ -168,6 +170,24 @@ export const firstWorld: World = {
         x: 0,
         y: 0,
         z: 0,
+      },
+    },
+  },
+  charactersById: {
+    "1": {
+      t: "character",
+      id: "1",
+      name: "Jekyll",
+      imageUri:
+        "https://yptpnirqgfmxphjvsdjz.supabase.co/storage/v1/object/public/heroes/minis/NpoqqaDotShInZPyA0iGz.png",
+      position: {
+        x: 100,
+        y: 100,
+        z: 0,
+      },
+      size: {
+        width: "120px",
+        height: "150px",
       },
     },
   },

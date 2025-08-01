@@ -24,7 +24,7 @@ export const DragHandle = ({
 }) => {
     return (
         <div 
-            className={`w-6 h-6 rounded-tl-md cursor-move flex items-center justify-center hover:bg-gray-400 transition-colors ${className}`}
+            className={`w-6 h-6 rounded-tl-md cursor-grab flex items-center justify-center hover:bg-gray-400 transition-colors ${className}`}
             onMouseDown={onMouseDown}
         >
             <DragIcon/>

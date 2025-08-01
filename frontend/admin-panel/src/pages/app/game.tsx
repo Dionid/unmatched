@@ -4,9 +4,9 @@ export type ResourceId = string;
 export type PlayerId = string;
 export type WorldId = string;
 export type MapId = string;
-export type ComponentId = string;
-export type PlayzoneId = string;
-export type PlayzoneItemId = string;
+export type CharacterId = string;
+
+// # Common
 
 export type Size = {
     width: string;
@@ -18,6 +18,8 @@ export type Position = {
     y: number;
     z: number;
 }
+
+// # Game
 
 export type Card = {
     t: 'card';
@@ -47,6 +49,15 @@ export type Resource = {
 //     resources: ResourceId[];
 // }
 
+export type Character = {
+    t: 'character';
+    id: CharacterId;
+    name: string;
+    imageUri: string;
+    position: Position;
+    size: Size;
+}
+
 export type Deck = {
     t: 'deck';
     id: DeckId;
@@ -65,6 +76,7 @@ export type Player = {
     decks: DeckId[];
     cards: CardId[];
     resources: ResourceId[];
+    characters: CharacterId[];
 }
 
 export type Map = {
@@ -88,4 +100,5 @@ export type World = {
     decksById: Record<DeckId, Deck>;
     resourcesById: Record<ResourceId, Resource>;
     mapsById: Record<MapId, Map>;
+    charactersById: Record<CharacterId, Character>;
 }

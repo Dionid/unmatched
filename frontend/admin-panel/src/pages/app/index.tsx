@@ -1,6 +1,6 @@
 import { DeckId, ResourceId, World } from "@/pages/app/game";
 import { useEffect, useState, useRef } from "react";
-import { GameDeck, GameMap, GameResource } from "./game-card";
+import { GameCharacter, GameDeck, GameMap, GameResource } from "./game-card";
 import { defaultWorld, firstWorld } from "./first-world";
 import { DragHandle } from "./additional";
 
@@ -28,7 +28,7 @@ export const Game = () => {
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
-  const [dragType, setDragType] = useState<"resource" | "deck" | "map" | null>(
+  const [dragType, setDragType] = useState<"resource" | "deck" | "map" | "character" | null>(
     null
   );
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -145,6 +145,26 @@ export const Game = () => {
     });
   };
 
+  // Function to update character position
+
+  const updateCharacterPosition = (characterId: string, x: number, y: number) => {
+    setWorld((prevWorld) => {
+      const character = prevWorld.charactersById[characterId];
+      if (!character) return prevWorld;
+
+      return {
+        ...prevWorld,
+        charactersById: {
+          ...prevWorld.charactersById,
+          [characterId]: {
+            ...character,
+            position: { x, y, z: character.position.z },
+          },
+        },
+      };
+    });
+  };
+
   // Function to update deck position
   const updateDeckPosition = (deckId: string, x: number, y: number) => {
     setWorld((prevWorld) => {
@@ -168,7 +188,7 @@ export const Game = () => {
   const handleMouseDown = (
     e: React.MouseEvent,
     id: string,
-    type: "resource" | "deck" | "map"
+    type: "resource" | "deck" | "map" | "character"
   ) => {
     e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
@@ -192,6 +212,8 @@ export const Game = () => {
       updateDeckPosition(isDragging, newX, newY);
     } else if (dragType === "map") {
       updateMapPosition(isDragging, newX, newY);
+    } else if (dragType === "character") {
+      updateCharacterPosition(isDragging, newX, newY);
     }
   };
 
@@ -342,36 +364,56 @@ export const Game = () => {
   return (
     <div className="w-full h-full p-6 relative">
       <div className="flex flex-col gap-4">
+        {Object.entries(world.mapsById).map(([id, map]) => {
+          const style: React.CSSProperties = {};
+
+          style.left = `${map.position.x}px`;
+          style.top = `${map.position.y}px`;
+
+          style.width = map.size.width;
+          style.height = map.size.height;
+
+          return (
+            <div
+              key={id}
+              className={"absolute bg-gray-300 rounded-md shadow-md"}
+              style={style}
+              ref={dragRef}
+            >
+              <div className="absolute top-0 left-0">
+                <DragHandle
+                  onMouseDown={(e) => handleMouseDown(e, id, "map")}
+                />
+              </div>
+              <div className="w-full h-full p-1 pl-6 shadow-sm">
+                <GameMap key={id} map={map} />
+              </div>
+            </div>
+          );
+        })}
+        {Object.entries(world.charactersById).map(([id, character]) => {
+          const style: React.CSSProperties = {};
+
+          style.left = `${character.position.x}px`;
+          style.top = `${character.position.y}px`;
+
+          style.width = character.size.width;
+          style.height = character.size.height;
+
+          style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+
+          return <div
+            key={id}
+            className="absolute rounded-md cursor-grab"
+            style={style}
+            onMouseDown={(e) => handleMouseDown(e, id, "character")}
+          >
+            <GameCharacter character={character} />
+          </div>
+        })}
         {Object.entries(world.playersById).map(([id, player]) => {
           return (
             <div key={id} className="flex gap-4 w-md">
-              {Object.entries(world.mapsById).map(([id, map]) => {
-                const style: React.CSSProperties = {};
-
-                style.left = `${map.position.x}px`;
-                style.top = `${map.position.y}px`;
-
-                style.width = map.size.width;
-                style.height = map.size.height;
-
-                return (
-                  <div
-                    key={id}
-                    className={"absolute bg-gray-300 rounded-md shadow-md"}
-                    style={style}
-                    ref={dragRef}
-                  >
-                    <div className="absolute top-0 left-0">
-                      <DragHandle
-                        onMouseDown={(e) => handleMouseDown(e, id, "map")}
-                      />
-                    </div>
-                    <div className="w-full h-full p-1 pl-6 shadow-sm">
-                      <GameMap key={id} map={map} />
-                    </div>
-                  </div>
-                );
-              })}
               {player.resources.map((resourceId) => {
                 const resource = world.resourcesById[resourceId];
 
