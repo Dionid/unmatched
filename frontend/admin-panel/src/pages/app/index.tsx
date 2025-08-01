@@ -8,9 +8,11 @@ import * as Y from "yjs";
 import { bind } from '@/lib/immer-yjs'
 
 const doc = new Y.Doc()
+const worldWrapper = doc.getMap<{ world: World }>('world-wrapper')
+const undoManager = new Y.UndoManager(worldWrapper)
 
 // define store
-const binder = bind<{ world: World }>(doc.getMap('world-wrapper'))
+const binder = bind<{ world: World }>(worldWrapper)
 
 function useImmerYjs<Selection>(selector: (state: { world: World }) => Selection) {
   const selection = useSyncExternalStoreWithSelector(binder.subscribe, binder.get, binder.get, selector)
@@ -26,6 +28,30 @@ binder.update((wrapper) => {
 
 export const Game = () => {
   const [world, update] = useImmerYjs(({world}) => world);
+
+  // undo/redo
+  useEffect(() => {
+    // On key "ctrl + z" pressed, undo
+    const handleUndoKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
+        undoManager.undo()
+      }
+    }
+    window.addEventListener("keydown", handleUndoKeyDown)
+
+    // On key "ctrl + y" pressed, redo
+    const handleRedoKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "y" && (e.ctrlKey || e.metaKey)) {
+        undoManager.redo()
+      }
+    }
+    window.addEventListener("keydown", handleRedoKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", handleUndoKeyDown)
+      window.removeEventListener("keydown", handleRedoKeyDown)
+    }
+  }, [update])
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);

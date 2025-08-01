@@ -2,9 +2,7 @@
 
 # TODO
 
-1. Characters
 1. Multiplayer
-1. Undo / Redo
 1. z-index
     1. Push to top when grabbed
 1. Settings
