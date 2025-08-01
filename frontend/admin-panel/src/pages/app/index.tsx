@@ -1,22 +1,21 @@
 import { World } from "@/pages/app/game";
-import { useEffect, useState, useRef, useSyncExternalStore } from "react";
+import { useEffect, useState, useRef } from "react";
+import {useSyncExternalStoreWithSelector} from "use-sync-external-store/with-selector"
 import { GameCharacter, GameDeck, GameMap, GameResource } from "./game-card";
 import { firstWorld } from "./first-world";
 import { DragHandle } from "./additional";
 import * as Y from "yjs";
 import { bind } from '@/lib/immer-yjs'
 
-
 const doc = new Y.Doc()
 
 // define store
 const binder = bind<{ world: World }>(doc.getMap('world-wrapper'))
 
-// define a helper hook
-function useImmerYjs() {
-    const selection = useSyncExternalStore(binder.subscribe, binder.get)
+function useImmerYjs<Selection>(selector: (state: { world: World }) => Selection) {
+  const selection = useSyncExternalStoreWithSelector(binder.subscribe, binder.get, binder.get, selector)
 
-    return [selection, binder.update] as const;
+  return [selection, binder.update] as const;
 }
 
 // optionally set initial data
@@ -26,7 +25,7 @@ binder.update((wrapper) => {
 
 
 export const Game = () => {
-  const [{world}, update] = useImmerYjs();
+  const [world, update] = useImmerYjs(({world}) => world);
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
