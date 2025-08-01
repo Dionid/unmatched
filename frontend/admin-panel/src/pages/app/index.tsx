@@ -1,30 +1,32 @@
-import { DeckId, ResourceId, World } from "@/pages/app/game";
-import { useEffect, useState, useRef } from "react";
+import { World } from "@/pages/app/game";
+import { useEffect, useState, useRef, useSyncExternalStore } from "react";
 import { GameCharacter, GameDeck, GameMap, GameResource } from "./game-card";
-import { defaultWorld, firstWorld } from "./first-world";
+import { firstWorld } from "./first-world";
 import { DragHandle } from "./additional";
+import * as Y from "yjs";
+import { bind } from '@/lib/immer-yjs'
 
-export type Settings = {
-  deckSettings: Record<
-    DeckId,
-    {
-      cardsPerRow?: number;
-      cardWidth?: number;
-      positionY?: string;
-      positionX?: string;
-    }
-  >;
-  resourceSettings: Record<
-    ResourceId,
-    {
-      positionX?: string;
-      positionY?: string;
-    }
-  >;
-};
+
+const doc = new Y.Doc()
+
+// define store
+const binder = bind<{ world: World }>(doc.getMap('world-wrapper'))
+
+// define a helper hook
+function useImmerYjs() {
+    const selection = useSyncExternalStore(binder.subscribe, binder.get)
+
+    return [selection, binder.update] as const;
+}
+
+// optionally set initial data
+binder.update((wrapper) => {
+    wrapper.world = firstWorld;
+})
+
 
 export const Game = () => {
-  const [world, setWorld] = useState<World>(defaultWorld);
+  const [{world}, update] = useImmerYjs();
 
   // Drag state management
   const [isDragging, setIsDragging] = useState<string | null>(null);
@@ -35,156 +37,83 @@ export const Game = () => {
   const dragRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const changedWorld = {
-      ...firstWorld,
-      resourcesById: {
-        ...firstWorld.resourcesById,
-        "1": {
-          ...firstWorld.resourcesById["1"],
-          position: { x: 20, y: 20, z: 0 },
-        },
-      },
-      decksById: {
-        ...firstWorld.decksById,
-        "1": {
-          ...firstWorld.decksById["1"],
-          position: {
-            x: window.innerWidth / 2 - 100,
-            y: window.innerHeight - 200,
-            z: 0,
-          },
-        },
-        "2": {
-          ...firstWorld.decksById["2"],
-          position: {
-            x: window.innerWidth - 190,
-            y: window.innerHeight - 200,
-            z: 0,
-          },
-        },
-        "3": {
-          ...firstWorld.decksById["3"],
-          position: { x: 20, y: window.innerHeight - 200, z: 0 },
-        },
-      },
-      mapsById: {
-        ...firstWorld.mapsById,
-        "1": {
-          ...firstWorld.mapsById["1"],
-          position: { x: window.innerWidth / 2 - 100, y: 50, z: 0 },
-        },
-      },
-    };
+    update(({world}) => {
+      world.resourcesById["1"].position.x = 20;
+      world.resourcesById["1"].position.y = 20;
+      world.resourcesById["1"].position.z = 0;
 
-    setWorld(changedWorld);
+      world.decksById["1"].position.x = window.innerWidth / 2 - 100;
+      world.decksById["1"].position.y = window.innerHeight - 200;
+      world.decksById["1"].position.z = 0;
+
+      world.decksById["2"].position.x = window.innerWidth - 190;
+      world.decksById["2"].position.y = window.innerHeight - 200;
+      world.decksById["2"].position.z = 0;
+
+      world.decksById["3"].position.x = 20;
+      world.decksById["3"].position.y = window.innerHeight - 200;
+      world.decksById["3"].position.z = 0;
+
+      world.decksById["e4a3facf-ad44-4dc3-ae4e-003a590f9f93"].position.x = window.innerWidth / 2 - 300;
+      world.decksById["e4a3facf-ad44-4dc3-ae4e-003a590f9f93"].position.y = window.innerHeight / 2 - 100;
+      world.decksById["e4a3facf-ad44-4dc3-ae4e-003a590f9f93"].position.z = 0;
+
+      world.mapsById["1"].position.x = window.innerWidth / 2 - 100;
+      world.mapsById["1"].position.y = 50;
+      world.mapsById["1"].position.z = 0;
+
+      world.charactersById["1"].position.x = 100;
+      world.charactersById["1"].position.y = 100;
+      world.charactersById["1"].position.z = 0;
+    });
   }, []);
 
   // Function to increment resource value
   const incrementResource = (resourceId: string) => {
-    setWorld((prevWorld) => ({
-      ...prevWorld,
-      resourcesById: {
-        ...prevWorld.resourcesById,
-        [resourceId]: {
-          ...prevWorld.resourcesById[resourceId],
-          value: prevWorld.resourcesById[resourceId].value + 1,
-        },
-      },
-    }));
+    update(({world}) => {
+      world.resourcesById[resourceId].value += 1;
+    });
   };
 
   // Function to decrement resource value
   const decrementResource = (resourceId: string) => {
-    setWorld((prevWorld) => ({
-      ...prevWorld,
-      resourcesById: {
-        ...prevWorld.resourcesById,
-        [resourceId]: {
-          ...prevWorld.resourcesById[resourceId],
-          value: Math.max(0, prevWorld.resourcesById[resourceId].value - 1),
-        },
-      },
-    }));
+    update(({world}) => {
+      world.resourcesById[resourceId].value -= 1;
+    });
   };
 
-  // Function to update resource position
+  // // // Function to update resource position
   const updateResourcePosition = (resourceId: string, x: number, y: number) => {
-    setWorld((prevWorld) => {
-      const resource = prevWorld.resourcesById[resourceId];
-      if (!resource) return prevWorld;
-
-      return {
-        ...prevWorld,
-        resourcesById: {
-          ...prevWorld.resourcesById,
-          [resourceId]: {
-            ...resource,
-            position: { x, y, z: resource.position.z },
-          },
-        },
-      };
+    update(({world}) => {
+      world.resourcesById[resourceId].position.x = x;
+      world.resourcesById[resourceId].position.y = y;
     });
   };
 
   // Function to update map position
   const updateMapPosition = (mapId: string, x: number, y: number) => {
-    setWorld((prevWorld) => {
-      const map = prevWorld.mapsById[mapId];
-      if (!map) return prevWorld;
-
-      return {
-        ...prevWorld,
-        mapsById: {
-          ...prevWorld.mapsById,
-          [mapId]: {
-            ...map,
-            position: { x, y, z: map.position.z },
-          },
-        },
-      };
+    update(({world}) => {
+      world.mapsById[mapId].position.x = x;
+      world.mapsById[mapId].position.y = y;
     });
   };
-
-  // Function to update character position
 
   const updateCharacterPosition = (characterId: string, x: number, y: number) => {
-    setWorld((prevWorld) => {
-      const character = prevWorld.charactersById[characterId];
-      if (!character) return prevWorld;
-
-      return {
-        ...prevWorld,
-        charactersById: {
-          ...prevWorld.charactersById,
-          [characterId]: {
-            ...character,
-            position: { x, y, z: character.position.z },
-          },
-        },
-      };
+    update(({world}) => {
+      world.charactersById[characterId].position.x = x;
+      world.charactersById[characterId].position.y = y;
     });
   };
 
-  // Function to update deck position
+  // // // Function to update deck position
   const updateDeckPosition = (deckId: string, x: number, y: number) => {
-    setWorld((prevWorld) => {
-      const deck = prevWorld.decksById[deckId];
-      if (!deck) return prevWorld;
-
-      return {
-        ...prevWorld,
-        decksById: {
-          ...prevWorld.decksById,
-          [deckId]: {
-            ...deck,
-            position: { x, y, z: deck.position.z },
-          },
-        },
-      };
+    update(({world}) => {
+      world.decksById[deckId].position.x = x;
+      world.decksById[deckId].position.y = y;
     });
   };
 
-  // Drag handlers
+  // // Drag handlers
   const handleMouseDown = (
     e: React.MouseEvent,
     id: string,
@@ -222,7 +151,7 @@ export const Game = () => {
     setDragType(null);
   };
 
-  // Add global mouse event listeners
+  // // Add global mouse event listeners
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -236,16 +165,9 @@ export const Game = () => {
   }, [isDragging, dragOffset, dragType]);
 
   const flipCard = (cardId: string) => {
-    setWorld((prevWorld) => ({
-      ...prevWorld,
-      cardsById: {
-        ...prevWorld.cardsById,
-        [cardId]: {
-          ...prevWorld.cardsById[cardId],
-          isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
-        },
-      },
-    }));
+    update(({world}) => {
+      world.cardsById[cardId].isFaceUp = !world.cardsById[cardId].isFaceUp;
+    });
   };
 
   const moveCardToDeck = (
@@ -253,111 +175,49 @@ export const Game = () => {
     currentDeckId: string,
     targetDeckId: string
   ) => {
-    setWorld((prevWorld) => {
-      // Find which deck currently contains this card
-      if (currentDeckId === targetDeckId) return prevWorld;
-
-      const targetDeck = prevWorld.decksById[targetDeckId];
-
-      // Remove card from source deck
-      const updatedDecks = {
-        ...prevWorld.decksById,
-        [currentDeckId]: {
-          ...prevWorld.decksById[currentDeckId],
-          cards: prevWorld.decksById[currentDeckId].cards.filter(
-            (id) => id !== cardId
-          ),
-        },
-        // Add card to target deck
-        [targetDeckId]: {
-          ...prevWorld.decksById[targetDeckId],
-          cards: [
-            ...prevWorld.decksById[targetDeckId].cards.filter(
-              (id) => id !== cardId
-            ),
-            cardId,
-          ],
-        },
-      };
+    update(({world}) => {
+      const currentDeck = world.decksById[currentDeckId];
+      const targetDeck = world.decksById[targetDeckId];
 
       if (targetDeck.type === "play") {
-        const card = prevWorld.cardsById[cardId];
-        if (card.isFaceUp) {
-          prevWorld = {
-            ...prevWorld,
-            cardsById: {
-              ...prevWorld.cardsById,
-              [cardId]: {
-                ...prevWorld.cardsById[cardId],
-                isFaceUp: !prevWorld.cardsById[cardId].isFaceUp,
-              },
-            },
-          };
-        }
+        world.cardsById[cardId].isFaceUp = false;
+      }
+      
+      currentDeck.cards = currentDeck.cards.filter((id) => id !== cardId);
+      targetDeck.cards.push(cardId);
+    });
+  };
+
+  // // Function to take top card from a deck and move it to another deck
+  const takeTopCard = (sourceDeckId: string, targetDeckId: string) => {
+    update(({world}) => {
+      const sourceDeck = world.decksById[sourceDeckId];
+      const movingCard = world.cardsById[sourceDeck.cards[sourceDeck.cards.length - 1]];
+
+      const targetDeck = world.decksById[targetDeckId];
+
+      if (targetDeck.type === "play") {
+        movingCard.isFaceUp = false;
       }
 
-      return {
-        ...prevWorld,
-        decksById: updatedDecks,
-      };
+      sourceDeck.cards = sourceDeck.cards.slice(0, -1);
+      targetDeck.cards.push(movingCard.id);
     });
   };
 
-  // Function to take top card from a deck and move it to another deck
-  const takeTopCard = (sourceDeckId: string, targetDeckId: string) => {
-    setWorld((prevWorld) => {
-      const sourceDeck = prevWorld.decksById[sourceDeckId];
-      if (!sourceDeck || sourceDeck.cards.length === 0) return prevWorld;
-
-      const topCardId = sourceDeck.cards[sourceDeck.cards.length - 1]; // Get the top card
-
-      // Remove top card from source deck
-      const updatedDecks = {
-        ...prevWorld.decksById,
-        [sourceDeckId]: {
-          ...sourceDeck,
-          cards: sourceDeck.cards.slice(0, -1), // Remove the last card
-        },
-        // Add top card to target deck
-        [targetDeckId]: {
-          ...prevWorld.decksById[targetDeckId],
-          cards: [...prevWorld.decksById[targetDeckId].cards, topCardId],
-        },
-      };
-
-      return {
-        ...prevWorld,
-        decksById: updatedDecks,
-      };
-    });
-  };
-
-  // Function to shuffle a deck
+  // // Function to shuffle a deck
   const shuffleDeck = (deckId: string) => {
-    setWorld((prevWorld) => {
-      const deck = prevWorld.decksById[deckId];
-      if (!deck || deck.cards.length === 0) return prevWorld;
+    update(({world}) => {
+      const deck = world.decksById[deckId];
+      if (!deck || deck.cards.length === 0) return;
 
-      // Create a copy of the cards array and shuffle it
       const shuffledCards = [...deck.cards];
       for (let i = shuffledCards.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [shuffledCards[i], shuffledCards[j]] = [
-          shuffledCards[j],
-          shuffledCards[i],
-        ];
+        [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]];
       }
 
-      return {
-        ...prevWorld,
-        decksById: {
-          ...prevWorld.decksById,
-          [deckId]: {
-            ...deck,
-            cards: shuffledCards,
-          },
-        },
-      };
+      deck.cards = shuffledCards;
     });
   };
 
