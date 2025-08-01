@@ -17,7 +17,8 @@ const AppInner = () => {
   return (
     <Routes>
       <Route path="/" element={<Main />} />
-      <Route path="app" element={<AppLayout />}>
+      <Route path="app">
+        <Route path=":roomId" element={<AppLayout />} />
       </Route>
     </Routes>
   );

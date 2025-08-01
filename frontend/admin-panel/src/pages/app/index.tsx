@@ -5,7 +5,9 @@ import { GameCharacter, GameDeck, GameMap, GameResource } from "./game-card";
 import { firstWorld } from "./first-world";
 import { DragHandle } from "./additional";
 import * as Y from "yjs";
+import { WebrtcProvider } from "y-webrtc";
 import { bind } from '@/lib/immer-yjs'
+import { useParams } from "react-router";
 
 const doc = new Y.Doc()
 const worldWrapper = doc.getMap<{ world: World }>('world-wrapper')
@@ -28,6 +30,24 @@ binder.update((wrapper) => {
 
 export const Game = () => {
   const [world, update] = useImmerYjs(({world}) => world);
+
+  // # Get current roomid from url
+  const params = useParams()
+
+
+  useEffect(() => {
+    const roomId = params.roomId
+
+    if (!roomId) {
+      return
+    }
+
+    new WebrtcProvider(roomId, doc, {
+      password: "47003af2-79c1-42ae-8dcd-aec53531202b",
+      signaling: ["wss://signaling.yjs.dev"],
+      maxConns: 10
+    });
+  }, [params]);
 
   // undo/redo
   useEffect(() => {
