@@ -412,6 +412,8 @@ export const Game = () => {
           </div>
         })}
         {Object.entries(world.playersById).map(([id, player]) => {
+          if (id !== world.currentPlayerId) return null;
+
           return (
             <div key={id} className="flex gap-4 w-md">
               {player.resources.map((resourceId) => {

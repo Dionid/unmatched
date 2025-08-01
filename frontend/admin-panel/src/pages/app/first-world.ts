@@ -3,7 +3,7 @@ import { World } from "@/pages/app/game";
 export const defaultWorld: World = {
   t: "world",
   id: "1",
-  currentPlayerId: "1",
+  currentPlayerId: "",
   playersById: {},
   cardsById: {},
   decksById: {},
@@ -14,8 +14,8 @@ export const defaultWorld: World = {
 
 export const firstWorld: World = {
   t: "world",
-  id: "1",
-  currentPlayerId: "1",
+  id: "2d304c56-0361-47a4-8426-e4154f69ef6b",
+  currentPlayerId: "d7c542af-1745-475f-86e6-1bba43ec8e56",
   cardsById: {
     "1": {
       t: "card",
@@ -145,9 +145,9 @@ export const firstWorld: World = {
     },
   },
   playersById: {
-    "1": {
+    "d7c542af-1745-475f-86e6-1bba43ec8e56": {
       t: "player",
-      id: "1",
+      id: "d7c542af-1745-475f-86e6-1bba43ec8e56",
       name: "Player 1",
       decks: ["1", "2", "3", "e4a3facf-ad44-4dc3-ae4e-003a590f9f93"],
       cards: ["1", "2", "3", "4"],
